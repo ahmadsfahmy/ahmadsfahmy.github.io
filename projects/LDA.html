@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="Visualizing Topic Models on Song Lyrics A common evaluation of Natural Language is deriving meaning from large amounts of text. Current techniques involve splitting the body of text into single words (tokenization) that are then analyzed for their inflection (i.e. its grammatical category - tense, case, voice, aspect&amp;hellip;etc.) called lemmatization. Statistical models can be applied to understand the similarity between the tokens. In the early 2000&amp;rsquo;s, a technique called Latent Dirichlet Allocation (LDA) was introduced as a statistical method of discovering topics in a body of text.">
+<meta name="keywords" content="">
+<meta name="robots" content="noodp">
+<link rel="canonical" href="http://127.0.0.1:4321/2019/05/10/topic-modeling-over-song-lyrics/">
+
+
+<title>
+
+    Topic Modeling over Song Lyrics :: F A H M Y . I O
+
+</title>
+
+
+
+<link href="flag-icon.css" rel="stylesheet" type="text/css">
+
+
+
+<link rel="stylesheet" href="main.css">
+
+
+
+<link rel="apple-touch-icon" sizes="180x180" href="http://127.0.0.1:4321/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://127.0.0.1:4321/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="http://127.0.0.1:4321/favicon-16x16.png">
+<link rel="manifest" href="http://127.0.0.1:4321/site.webmanifest">
+<link rel="mask-icon" href="http://127.0.0.1:4321/safari-pinned-tab.svg" color="#252627">
+<link rel="shortcut icon" href="http://127.0.0.1:4321/favicon.ico">
+<meta name="theme-color" content="#252627">
+<meta itemprop="name" content="Topic Modeling over Song Lyrics">
+<meta itemprop="description" content="Visualizing Topic Models on Song Lyrics A common evaluation of Natural Language is deriving meaning from large amounts of text. Current techniques involve splitting the body of text into single words (tokenization) that are then analyzed for their inflection (i.e. its grammatical category - tense, case, voice, aspect…etc.) called lemmatization. Statistical models can be applied to understand the similarity between the tokens. In the early 2000’s, a technique called Latent Dirichlet Allocation (LDA) was introduced as a statistical method of discovering topics in a body of text.">
+
+
+<meta itemprop="datePublished" content="2019-05-10T00:00:00+00:00">
+<meta itemprop="dateModified" content="2019-05-10T00:00:00+00:00">
+<meta itemprop="wordCount" content="914">
+
+
+
+<meta itemprop="keywords" content="">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Topic Modeling over Song Lyrics">
+<meta name="twitter:description" content="Visualizing Topic Models on Song Lyrics A common evaluation of Natural Language is deriving meaning from large amounts of text. Current techniques involve splitting the body of text into single words (tokenization) that are then analyzed for their inflection (i.e. its grammatical category - tense, case, voice, aspect…etc.) called lemmatization. Statistical models can be applied to understand the similarity between the tokens. In the early 2000’s, a technique called Latent Dirichlet Allocation (LDA) was introduced as a statistical method of discovering topics in a body of text.">
+
+
+
+
+<meta property="article:published_time" content="2019-05-10 00:00:00 +0000 UTC">
+
+
+
+
+
+
+
+    <script type="text/javascript">
+// automatically refresh the page when necessary (R will send a message to ws)
+(function() {
+  var protocol = 'ws:';
+  if (window.location.protocol === 'https:') protocol = 'wss:';
+  var path = window.location.pathname;
+  if (!/\/$/.test(path)) path += '/';
+  path += 'websocket/';
+
+  var ws = new WebSocket(protocol + '//' + window.location.host + path);
+  var flag;
+  ws.onmessage = function(evt) {
+    flag = true;
+    if (evt.data === 'false' || evt.data === 'null') return;
+    // fire a servr:reload event
+    Event && document.dispatchEvent(new Event('servr:reload'));
+    location.reload();
+  };
+  setInterval(function() {
+    if (flag === false || ws.readyState !== ws.OPEN) return;
+    flag = false;  // prevent ws message if R hasn't responded yet
+    ws.send('{}');
+  }, 1000);
+})();
+</script>
+</head>
+
+    <body class="dark-theme">
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="http://127.0.0.1:4321/" style="text-decoration: none;">
+    <div class="logo">
+
+            <span class="logo__mark">&gt;</span>
+            <span class="logo__text">F A H M Y . I O</span>
+            <span class="logo__cursor"></span>
+
+    </div>
+</a>
+
+
+    </span>
+</header>
+
+
+            <div class="content">
+
+    <main class="post">
+
+        <div class="post-info">
+
+            <p></p>
+        </div>
+
+        <article>
+            <h2 class="post-title"><a href="http://127.0.0.1:4321/2019/05/10/topic-modeling-over-song-lyrics/">Topic Modeling over Song Lyrics</a></h2>
+
+
+
+            <div class="post-content">
+
+
+<h1 id="visualizing-topic-models-on-song-lyrics">Visualizing Topic Models on Song Lyrics</h1>
+
+<p>A common evaluation of Natural Language is deriving meaning from
+large amounts of text. Current techniques involve splitting the body of
+text into single words (<code>tokenization</code>) that are then analyzed for their inflection (i.e. its grammatical category - tense, case, voice, aspect…etc.) called <code>lemmatization</code>.
+ Statistical models can be applied to understand the similarity between
+the tokens. In the early 2000’s, a technique called Latent Dirichlet
+Allocation (LDA) was introduced as a statistical method of discovering
+topics in a body of text. Simply put, LDA is a generative model that
+determines the probability of a topic <em><strong>Z</strong></em> over a given topic distribution <em><strong>X</strong></em> and its target (a body of text) <em><strong>Y</strong></em>. LDA assumes that a body of text can have multiple underlying topics.</p>
+
+<h2 id="preparing-the-data">Preparing the data</h2>
+
+<p>I have over 200 saved playlists in Spotify across different genres so
+ this would be a great dataset to perform analysis on. The Spotify API
+provides an interface to extract artist, album, track, and audio
+metadata. Genius.com offers an API to extract lyrics of a given track.
+Using these two interfaces in python, I will build a dataset containing:</p>
+
+<ul>
+<li>artist</li>
+<li>album</li>
+<li>track name</li>
+<li>lyrics</li>
+<li>audio metadata (audio analysis and features)</li>
+</ul>
+
+<p>To integrate these APIs to build the dataset, I will create a couple
+functions to put all of the pieces together that iteratively collect each playlist, pass its metadata to the genius API and extract the lyrics</p>
+
+<pre class=" language-python"><code class=" language-python"><span class="token keyword">def</span> <span class="token function">user_playlists</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> user<span class="token punctuation">,</span> limit<span class="token punctuation">,</span> offset<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> self<span class="token punctuation">.</span>_get<span class="token punctuation">(</span><span class="token string">"users/%s/playlists"</span> <span class="token operator">%</span> user<span class="token punctuation">,</span>limit<span class="token punctuation">,</span> offset<span class="token punctuation">)</span>
+<span class="token keyword">def</span> <span class="token function">show_tracks</span><span class="token punctuation">(</span>results<span class="token punctuation">)</span><span class="token punctuation">:</span>
+   <span class="token keyword">for</span> i<span class="token punctuation">,</span>item <span class="token keyword">in</span> <span class="token builtin">enumerate</span><span class="token punctuation">(</span>results<span class="token punctuation">[</span><span class="token string">'items'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+       track <span class="token operator">=</span> item<span class="token punctuation">[</span><span class="token string">'track'</span><span class="token punctuation">]</span>
+       a_analysis <span class="token operator">=</span> sp<span class="token punctuation">.</span>audio_analysis<span class="token punctuation">(</span>track<span class="token punctuation">[</span><span class="token string">'id'</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+       a_features <span class="token operator">=</span> sp<span class="token punctuation">.</span>audio_features<span class="token punctuation">(</span>track<span class="token punctuation">[</span><span class="token string">'id'</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+       response <span class="token operator">=</span> request_song_info<span class="token punctuation">(</span>track<span class="token punctuation">[</span><span class="token string">'artists'</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token string">'name'</span><span class="token punctuation">]</span><span class="token punctuation">,</span> track<span class="token punctuation">[</span><span class="token string">'name'</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+       json <span class="token operator">=</span> response<span class="token punctuation">.</span>json<span class="token punctuation">(</span><span class="token punctuation">)</span>
+       remote_song_info <span class="token operator">=</span> <span class="token boolean">None</span>
+       <span class="token keyword">for</span> hit <span class="token keyword">in</span> json<span class="token punctuation">[</span><span class="token string">'response'</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token string">'hits'</span><span class="token punctuation">]</span><span class="token punctuation">:</span>
+           <span class="token keyword">if</span> track<span class="token punctuation">[</span><span class="token string">'artists'</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token string">'name'</span><span class="token punctuation">]</span><span class="token punctuation">.</span>lower<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">in</span> hit<span class="token punctuation">[</span><span class="token string">'result'</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token string">'primary_artist'</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token string">'name'</span><span class="token punctuation">]</span><span class="token punctuation">.</span>lower<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+               remote_song_info <span class="token operator">=</span> hit
+           <span class="token keyword">break</span>
+       <span class="token keyword">if</span> remote_song_info<span class="token punctuation">:</span>
+           song_url <span class="token operator">=</span> remote_song_info<span class="token punctuation">[</span><span class="token string">'result'</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token string">'url'</span><span class="token punctuation">]</span>
+           lyrics <span class="token operator">=</span> scrap_song_url<span class="token punctuation">(</span>song_url<span class="token punctuation">)</span>
+       <span class="token keyword">else</span><span class="token punctuation">:</span>
+           lyrics <span class="token operator">=</span> <span class="token string">"No Lyrics Found"</span>
+       compiled_info <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">{</span><span class="token string">"Artist"</span><span class="token punctuation">:</span> a<span class="token punctuation">,</span> <span class="token string">"Album"</span><span class="token punctuation">:</span> b<span class="token punctuation">,</span> <span class="token string">"Release_Date"</span><span class="token punctuation">:</span> c<span class="token punctuation">,</span> <span class="token string">"Track_Name"</span><span class="token punctuation">:</span> d<span class="token punctuation">,</span> <span class="token string">"Track_Duration_ms"</span><span class="token punctuation">:</span> e<span class="token punctuation">,</span> <span class="token string">"Popularity"</span><span class="token punctuation">:</span> f<span class="token punctuation">,</span> <span class="token string">"Track_Audio_Analysis"</span><span class="token punctuation">:</span> g<span class="token punctuation">,</span> <span class="token string">"Track_Audio_Features"</span><span class="token punctuation">:</span> h<span class="token punctuation">,</span> <span class="token string">"Lyrics"</span><span class="token punctuation">:</span> i<span class="token punctuation">}</span> <span class="token keyword">for</span> a<span class="token punctuation">,</span>b<span class="token punctuation">,</span>c<span class="token punctuation">,</span>d<span class="token punctuation">,</span>e<span class="token punctuation">,</span>f<span class="token punctuation">,</span>g<span class="token punctuation">,</span>h<span class="token punctuation">,</span>i <span class="token keyword">in</span> <span class="token builtin">zip</span><span class="token punctuation">(</span>artist<span class="token punctuation">,</span>album<span class="token punctuation">,</span>release_date<span class="token punctuation">,</span>track_name<span class="token punctuation">,</span>track_duration_ms<span class="token punctuation">,</span>popularity<span class="token punctuation">,</span>track_audio_analysis<span class="token punctuation">,</span> track_audio_features<span class="token punctuation">,</span> genius_lyrics<span class="token punctuation">)</span><span class="token punctuation">]</span>
+   <span class="token keyword">return</span> compiled_info
+
+</code></pre>
+
+<p>Now to pull all of the data together and compile the dataset:</p>
+
+<pre class=" language-python"><code class=" language-python">      <span class="token keyword">while</span> <span class="token punctuation">(</span> offset_counter <span class="token operator">&lt;=</span> total_playlists<span class="token punctuation">)</span><span class="token punctuation">:</span>
+          playlists <span class="token operator">=</span> sp<span class="token punctuation">.</span>user_playlists<span class="token punctuation">(</span>uname<span class="token punctuation">,</span> limit <span class="token operator">=</span> load_limit<span class="token punctuation">,</span> offset <span class="token operator">=</span> offset_counter <span class="token punctuation">)</span>
+          <span class="token keyword">for</span> playlist <span class="token keyword">in</span> playlists<span class="token punctuation">[</span><span class="token string">'items'</span><span class="token punctuation">]</span><span class="token punctuation">:</span>
+              <span class="token keyword">if</span> playlist<span class="token punctuation">[</span><span class="token string">'owner'</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token string">'id'</span><span class="token punctuation">]</span> <span class="token operator">==</span> uname<span class="token punctuation">:</span>
+                  results <span class="token operator">=</span> sp<span class="token punctuation">.</span>user_playlist<span class="token punctuation">(</span>uname<span class="token punctuation">,</span> playlist<span class="token punctuation">[</span><span class="token string">'id'</span><span class="token punctuation">]</span><span class="token punctuation">,</span> fields<span class="token operator">=</span><span class="token string">"tracks,next"</span><span class="token punctuation">)</span>
+                  tracks <span class="token operator">=</span> results<span class="token punctuation">[</span><span class="token string">'tracks'</span><span class="token punctuation">]</span>
+                  playlist_tracks<span class="token punctuation">.</span>append<span class="token punctuation">(</span>show_tracks<span class="token punctuation">(</span>tracks<span class="token punctuation">)</span><span class="token punctuation">)</span>
+                  <span class="token keyword">while</span> tracks<span class="token punctuation">[</span><span class="token string">'next'</span><span class="token punctuation">]</span><span class="token punctuation">:</span>
+                      tracks <span class="token operator">=</span> sp<span class="token punctuation">.</span><span class="token builtin">next</span><span class="token punctuation">(</span>tracks<span class="token punctuation">)</span>
+                      playlist_tracks<span class="token punctuation">.</span>append<span class="token punctuation">(</span>show_tracks<span class="token punctuation">(</span>tracks<span class="token punctuation">)</span><span class="token punctuation">)</span>
+              playlist_json <span class="token operator">=</span> json<span class="token punctuation">.</span>dumps<span class="token punctuation">(</span>playlist_tracks<span class="token punctuation">)</span>
+              playlist_output_file <span class="token operator">=</span> <span class="token string">"playlist_chunk{}.json"</span><span class="token punctuation">.</span><span class="token builtin">format</span><span class="token punctuation">(</span>offset_counter<span class="token punctuation">)</span>
+          <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"current offset: "</span> <span class="token operator">+</span> <span class="token builtin">str</span><span class="token punctuation">(</span>offset_counter<span class="token punctuation">)</span><span class="token punctuation">)</span>
+          <span class="token keyword">with</span> <span class="token builtin">open</span><span class="token punctuation">(</span>playlist_output_file<span class="token punctuation">,</span><span class="token string">"w"</span><span class="token punctuation">)</span> <span class="token keyword">as</span> f<span class="token punctuation">:</span>
+                  f<span class="token punctuation">.</span>write<span class="token punctuation">(</span>playlist_json<span class="token punctuation">)</span>
+                  f<span class="token punctuation">.</span>close<span class="token punctuation">(</span><span class="token punctuation">)</span>
+          offset_counter <span class="token operator">+=</span> <span class="token number">51</span>
+</code></pre>
+
+<h2 id="data-pre-processing">Data Pre Processing</h2>
+
+<p>Once all of the playlist metadata is compiled, it needs to go through
+ some pre-processing: tokenization and lemmatization. This is just a fancy way of saying that the body of text will be broken up into individual words and then tagged with its corresponding part of speech (e.g. noun, verb, adjective..etc.)</p>
+
+<pre class=" language-python"><code class=" language-python"><span class="token keyword">def</span> <span class="token function">filter_words</span><span class="token punctuation">(</span>filename<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    filter_set <span class="token operator">=</span> pd<span class="token punctuation">.</span>DataFrame<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">for</span> filename <span class="token keyword">in</span> glob<span class="token punctuation">.</span>glob<span class="token punctuation">(</span>filename<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        temp_df <span class="token operator">=</span> pd<span class="token punctuation">.</span>read_csv<span class="token punctuation">(</span>filename<span class="token punctuation">,</span> header<span class="token operator">=</span><span class="token boolean">None</span><span class="token punctuation">,</span> sep<span class="token operator">=</span><span class="token string">','</span><span class="token punctuation">)</span>
+        filter_set <span class="token operator">=</span> temp_df<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>values<span class="token punctuation">.</span>tolist<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        filter_words <span class="token operator">=</span> <span class="token punctuation">[</span>word<span class="token punctuation">.</span>replace<span class="token punctuation">(</span><span class="token string">','</span><span class="token punctuation">,</span><span class="token string">''</span><span class="token punctuation">)</span> <span class="token keyword">for</span> word <span class="token keyword">in</span> filter_set<span class="token punctuation">]</span>
+        <span class="token keyword">return</span> filter_words
+<span class="token keyword">def</span> <span class="token function">preprocess_lyrics</span><span class="token punctuation">(</span>pd_df<span class="token punctuation">,</span> filter_words_list<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token builtin">list</span><span class="token punctuation">(</span>STOP_WORDS<span class="token punctuation">)</span><span class="token punctuation">.</span>extend<span class="token punctuation">(</span>filter_words_list<span class="token punctuation">)</span>
+    pd_df<span class="token punctuation">[</span><span class="token string">'Lyrics'</span><span class="token punctuation">]</span> <span class="token operator">=</span> pd_df<span class="token punctuation">[</span><span class="token string">'Lyrics'</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token builtin">str</span><span class="token punctuation">.</span>replace<span class="token punctuation">(</span><span class="token string">'[^\w\s]'</span><span class="token punctuation">,</span><span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token builtin">str</span><span class="token punctuation">.</span>lower<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token builtin">str</span><span class="token punctuation">.</span>split<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    pd_df<span class="token punctuation">[</span><span class="token string">'Lyrics'</span><span class="token punctuation">]</span> <span class="token operator">=</span> pd_df<span class="token punctuation">[</span><span class="token string">'Lyrics'</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token builtin">apply</span><span class="token punctuation">(</span><span class="token keyword">lambda</span> x<span class="token punctuation">:</span> <span class="token punctuation">[</span>item <span class="token keyword">for</span> item <span class="token keyword">in</span> x <span class="token keyword">if</span> item <span class="token keyword">not</span> <span class="token keyword">in</span> filter_words_list<span class="token punctuation">]</span><span class="token punctuation">)</span>
+    <span class="token keyword">return</span> pd_df
+<span class="token keyword">def</span> <span class="token function">tokenize_lyrics</span> <span class="token punctuation">(</span>lyrics<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">for</span> sentence <span class="token keyword">in</span> lyrics<span class="token punctuation">:</span>
+        <span class="token keyword">yield</span><span class="token punctuation">(</span>gensim<span class="token punctuation">.</span>utils<span class="token punctuation">.</span>simple_preprocess<span class="token punctuation">(</span><span class="token builtin">str</span><span class="token punctuation">(</span>sentence<span class="token punctuation">)</span><span class="token punctuation">,</span> deacc<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token keyword">def</span> <span class="token function">lemmatize_lyrics</span> <span class="token punctuation">(</span>lyrics<span class="token punctuation">,</span> allowed_postags <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">'NOUN'</span><span class="token punctuation">,</span> <span class="token string">'ADJ'</span><span class="token punctuation">,</span> <span class="token string">'VERB'</span><span class="token punctuation">,</span> <span class="token string">'ADV'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    nlp <span class="token operator">=</span> spacy<span class="token punctuation">.</span>load<span class="token punctuation">(</span><span class="token string">'en_core_web_sm'</span><span class="token punctuation">,</span> disable <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">'parser'</span><span class="token punctuation">,</span> <span class="token string">'ner'</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+    text_out<span class="token operator">=</span><span class="token punctuation">[</span><span class="token punctuation">]</span>
+    <span class="token keyword">for</span> sentence <span class="token keyword">in</span> lyrics<span class="token punctuation">:</span>
+        doc <span class="token operator">=</span> nlp<span class="token punctuation">(</span><span class="token string">" "</span><span class="token punctuation">.</span>join<span class="token punctuation">(</span>sentence<span class="token punctuation">)</span><span class="token punctuation">)</span>
+        text_out<span class="token punctuation">.</span>append<span class="token punctuation">(</span><span class="token string">" "</span><span class="token punctuation">.</span>join<span class="token punctuation">(</span><span class="token punctuation">[</span>token<span class="token punctuation">.</span>lemma_ <span class="token keyword">if</span> token<span class="token punctuation">.</span>lemma_ <span class="token keyword">not</span> <span class="token keyword">in</span> <span class="token punctuation">[</span><span class="token string">'-PRON-'</span><span class="token punctuation">]</span> <span class="token keyword">else</span> <span class="token string">''</span> <span class="token keyword">for</span> token <span class="token keyword">in</span> doc <span class="token keyword">if</span> token<span class="token punctuation">.</span>pos_ <span class="token keyword">in</span> allowed_postags<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token keyword">return</span> text_out
+
+</code></pre>
+
+<h2 id="feature-extraction">Feature Extraction</h2>
+
+<p>To perform statistical modeling, the list of tokens need to be
+converted into a numerical representation. This is known as ‘sparse
+features’ - resulting in a matrix containing the counts of each token
+(sparse matrices will contain a lot of zeros). Next, the sparse matrix
+will be compressed (to reduce the number of zeros) into a set of ‘dense
+features’ which is a required input into the LDA model.</p>
+
+<pre class=" language-python"><code class=" language-python">lda_vectorizer <span class="token operator">=</span> CountVectorizer<span class="token punctuation">(</span>analyzer<span class="token operator">=</span><span class="token string">'word'</span><span class="token punctuation">,</span> min_df<span class="token operator">=</span><span class="token number">10</span><span class="token punctuation">,</span> stop_words<span class="token operator">=</span><span class="token string">'english'</span><span class="token punctuation">,</span> lowercase<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">,</span> token_pattern<span class="token operator">=</span><span class="token string">'[a-zA-Z0-9]{3,}'</span><span class="token punctuation">)</span>
+vectorize_lyrics <span class="token operator">=</span> lda_vectorizer<span class="token punctuation">.</span>fit_transform<span class="token punctuation">(</span>lemmatized_lyrics<span class="token punctuation">)</span>
+density <span class="token operator">=</span> vectorize_lyrics<span class="token punctuation">.</span>todense<span class="token punctuation">(</span><span class="token punctuation">)</span>
+</code></pre>
+
+<p>To see how many zero elements remain in our dense matrix, we can look at <code>sparsity</code></p>
+
+<pre class=" language-python"><code class=" language-python"><span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"Sparsicity:"</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>density <span class="token operator">&gt;</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token builtin">sum</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">/</span>density<span class="token punctuation">.</span>size<span class="token punctuation">)</span><span class="token operator">*</span><span class="token number">100</span><span class="token punctuation">,</span><span class="token string">"%"</span><span class="token punctuation">)</span>
+</code></pre>
+
+<h2 id="building-a-baseline-lda-model">Building a baseline LDA Model</h2>
+
+<p>A baseline LDA model can be developed using the dense vector. The parameters for the model include:<br>
+<code>n_topics</code> how many topics to discover<br>
+<code>max_iter</code> number of learning iterations<br>
+<code>learning_method</code> the method of variational Bayesian Inference to learn topics <br>
+<code>batch size</code> The number of documents to use in each training iteration <br>
+<code>perplexity evauluation</code> Determines the perplexity of the model after <em>n-iterations</em>.</p>
+
+<p>Additionally, we want to show the performance of the baseline model with the following validation metrics: <code>Log-Likelihood</code> and <code>Perplexity</code></p>
+
+<p>Log-Likelihood and Perplexity are measures of how well a probability
+distribution fits a new set of data. Perplexity is expressed as a score,
+ the higher the better.</p>
+
+<pre class=" language-python"><code class=" language-python"><span class="token keyword">def</span> <span class="token function">build_LDA</span><span class="token punctuation">(</span>vector<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    lda_model <span class="token operator">=</span> LatentDirichletAllocation<span class="token punctuation">(</span>n_components<span class="token operator">=</span><span class="token number">10</span><span class="token punctuation">,</span> max_iter<span class="token operator">=</span><span class="token number">20</span><span class="token punctuation">,</span> learning_method<span class="token operator">=</span><span class="token string">'batch'</span><span class="token punctuation">,</span> random_state<span class="token operator">=</span><span class="token number">100</span><span class="token punctuation">,</span> batch_size <span class="token operator">=</span> <span class="token number">100</span><span class="token punctuation">,</span> evaluate_every <span class="token operator">=</span> <span class="token number">10</span><span class="token punctuation">,</span> n_jobs<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">)</span>
+    lda_output <span class="token operator">=</span> lda_model<span class="token punctuation">.</span>fit_transform<span class="token punctuation">(</span>vector<span class="token punctuation">)</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"Base Model Log-Likelihood:"</span><span class="token punctuation">,</span> lda_model<span class="token punctuation">.</span>score<span class="token punctuation">(</span>vector<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"Base Model Perplexity:"</span><span class="token punctuation">,</span> lda_model<span class="token punctuation">.</span>perplexity<span class="token punctuation">(</span>vector<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token keyword">return</span> lda_output
+</code></pre>
+
+<p>The baseline model metrics obtained from the lyric data below show the model increases perplexity and log-Likelihood over time:</p>
+
+<pre><code>Batch Number:  1  Log-Likelihood: -231384.91089204518 Perplexity: 403.187349204198 Sparsicity: 6.5403131222213124 %
+
+Batch Number:  2  Log-Likelihood: -383902.0992060229  Perplexity: 542.5971631266931 Sparsicity: 4.402649664219081 %
+
+Batch Number:  3  Log-Likelihood: -554721.0211572415  Perplexity: 626.5850111194372 Sparsicity: 3.054593658859907 %
+
+Batch Number:  4  Log-Likelihood: -699000.4114972427  Perplexity: 679.6794398272324 Sparsicity: 2.5980898343763665 %
+
+Batch Number:  5  Log-Likelihood: -1284881.785763533  Perplexity: 827.1780702589926 Sparsicity: 2.062455946799056 %
+</code></pre>
+
+<h2 id="visualizing-the-topic-model">Visualizing the Topic Model</h2>
+
+<p>A visual of the topic model can be created using the LDAViz library.
+This gives us the ability to see the dominant words in each topic
+cluster and a comparison against the the word frequency as a whole.</p>
+
+<pre class=" language-python"><code class=" language-python"><span class="token keyword">def</span> <span class="token function">LDA_Viz</span><span class="token punctuation">(</span>vector<span class="token punctuation">,</span> best_lda_model<span class="token punctuation">,</span> vectorizer<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        pyLDAvis<span class="token punctuation">.</span>disable_notebook<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        panel <span class="token operator">=</span> pyLDAvis<span class="token punctuation">.</span>sklearn<span class="token punctuation">.</span>prepare<span class="token punctuation">(</span>best_lda_model<span class="token punctuation">,</span> vector<span class="token punctuation">,</span> vectorizer<span class="token punctuation">,</span> mds <span class="token operator">=</span><span class="token string">'tsne'</span><span class="token punctuation">,</span> n_jobs<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">,</span> sort_topics<span class="token operator">=</span><span class="token boolean">False</span><span class="token punctuation">)</span>
+        pyLDAvis<span class="token punctuation">.</span>show<span class="token punctuation">(</span>panel<span class="token punctuation">,</span> ip<span class="token operator">=</span><span class="token string">'127.0.0.1'</span><span class="token punctuation">,</span> port<span class="token operator">=</span><span class="token number">8888</span><span class="token punctuation">,</span>local<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">,</span> open_browser<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">)</span>
+LDA_Viz<span class="token punctuation">(</span>vectorize_lyrics<span class="token punctuation">,</span>best_lda_model<span class="token punctuation">,</span>lda_vectorizer<span class="token punctuation">)</span>
+</code></pre>
+
+<p><img src="Topic_Model.PNG" alt="Sample Topic Model"></p>
+
+            </div>
+        </article>
+
+        <hr>
+
+        <div class="post-info">
+  			</div>
+
+
+    </main>
+
+            </div>
+
+
+                <footer class="footer">
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>Ahmad Fahmy </span><span>© 2019</span>
+
+            <span></span>
+            
+        </div>
+    </div>
+    <div class="footer__inner">
+        <div class="footer__content">
+
+        </div>
+    </div>
+    <div class="footer__inner">
+        <div class="footer__content">
+        </div>
+    </div>
+</footer>
+        </div>
+<script type="text/javascript" src="bundle.js" integrity="sha512-z3hx7UlHSoDtRXFU0k5h94ga2+D5OElRp0rEa2iKOaTb+mi8bTe66wWBht41Tq00h9Tufwg+pMuoYMSGALaU8w=="></script>
+</body></html>
