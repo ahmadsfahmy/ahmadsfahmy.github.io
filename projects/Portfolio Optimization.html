@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="There are numerous studies dedicated to efficient portfolio selection. As a general rule to portfolio creation, one should diversify funds to maximize returns and minimize risk (Harry Markowitz &amp;ldquo;Portfolio Selection&amp;rdquo;, 1952). In his paper, Markowitz presents several rules when selecting a portfolio: first, one should diversify and place funds into securities with the maximum anticipated returns (maximize returns). Second, select a portfolio with minimum variance of expected return (minimize risk).">
+<meta name="keywords" content="">
+<meta name="robots" content="noodp">
+<link rel="canonical" href="http://127.0.0.1:4321/2019/05/14/portfolio-optimization/">
+
+
+<title>
+    
+    Portfolio Optimization :: F A H M Y . I O 
+    
+</title>
+
+
+
+<link href="Portfolio%20Optimization_files/flag-icon.css" rel="stylesheet" type="text/css">
+
+
+
+<link rel="stylesheet" href="main.css">
+
+
+
+<link rel="apple-touch-icon" sizes="180x180" href="http://127.0.0.1:4321/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://127.0.0.1:4321/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="http://127.0.0.1:4321/favicon-16x16.png">
+<link rel="manifest" href="http://127.0.0.1:4321/site.webmanifest">
+<link rel="mask-icon" href="http://127.0.0.1:4321/safari-pinned-tab.svg" color="#252627">
+<link rel="shortcut icon" href="http://127.0.0.1:4321/favicon.ico">
+<meta name="theme-color" content="#252627">
+<meta itemprop="name" content="Portfolio Optimization">
+<meta itemprop="description" content="There are numerous studies dedicated to efficient portfolio selection. As a general rule to portfolio creation, one should diversify funds to maximize returns and minimize risk (Harry Markowitz “Portfolio Selection”, 1952). In his paper, Markowitz presents several rules when selecting a portfolio: first, one should diversify and place funds into securities with the maximum anticipated returns (maximize returns). Second, select a portfolio with minimum variance of expected return (minimize risk).">
+
+
+<meta itemprop="datePublished" content="2019-05-14T00:00:00+00:00">
+<meta itemprop="dateModified" content="2019-05-14T00:00:00+00:00">
+<meta itemprop="wordCount" content="526">
+
+
+
+<meta itemprop="keywords" content="">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Portfolio Optimization">
+<meta name="twitter:description" content="There are numerous studies dedicated to efficient portfolio selection. As a general rule to portfolio creation, one should diversify funds to maximize returns and minimize risk (Harry Markowitz “Portfolio Selection”, 1952). In his paper, Markowitz presents several rules when selecting a portfolio: first, one should diversify and place funds into securities with the maximum anticipated returns (maximize returns). Second, select a portfolio with minimum variance of expected return (minimize risk).">
+
+
+
+
+<meta property="article:published_time" content="2019-05-14 00:00:00 +0000 UTC">
+
+
+
+
+
+
+
+    <script type="text/javascript">
+// automatically refresh the page when necessary (R will send a message to ws)
+(function() {
+  var protocol = 'ws:';
+  if (window.location.protocol === 'https:') protocol = 'wss:';
+  var path = window.location.pathname;
+  if (!/\/$/.test(path)) path += '/';
+  path += 'websocket/';
+
+  var ws = new WebSocket(protocol + '//' + window.location.host + path);
+  var flag;
+  ws.onmessage = function(evt) {
+    flag = true;
+    if (evt.data === 'false' || evt.data === 'null') return;
+    // fire a servr:reload event
+    Event && document.dispatchEvent(new Event('servr:reload'));
+    location.reload();
+  };
+  setInterval(function() {
+    if (flag === false || ws.readyState !== ws.OPEN) return;
+    flag = false;  // prevent ws message if R hasn't responded yet
+    ws.send('{}');
+  }, 1000);
+})();
+</script>
+</head>
+
+    <body class="dark-theme">
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="http://127.0.0.1:4321/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">&gt;</span>
+            <span class="logo__text">F A H M Y . I O</span>
+            <span class="logo__cursor"></span>
+        
+    </div>
+</a>
+
+
+    </span>
+</header>
+
+
+            <div class="content">
+                
+    <main class="post">
+
+        <div class="post-info">
+            
+            <p></p>
+        </div>
+
+        <article>
+            <h2 class="post-title"><a href="http://127.0.0.1:4321/2019/05/14/portfolio-optimization/">Portfolio Optimization</a></h2>
+
+            
+
+            <div class="post-content">
+                
+
+<p>There are numerous studies dedicated to efficient portfolio 
+selection. As a general rule to portfolio creation, one should diversify
+ funds to maximize returns and minimize risk (Harry Markowitz “Portfolio
+ Selection”, 1952). In his paper, Markowitz presents several rules when 
+selecting a portfolio: first, one should diversify and place funds into 
+securities with the maximum anticipated returns (maximize returns). 
+Second, select a portfolio with minimum variance of expected return 
+(minimize risk).
+A decade later, William Sharpe (“The Sharpe Ratio”, 1966) introduced a 
+metric known as the Sharpe Ratio that quantifies the risk-to-reward 
+relationship described by Markowitz.</p>
+
+<p><strong>How can we methodically select a portfolio that both maximizes return and minimize risk?</strong>
+ I will walk through a technique of portfolio selection using the 
+principles of Markowitz and Sharpe on stocks listed in the S&amp;P500 
+with the goal of optimizing return and minimizing risk.</p>
+
+<h2 id="quantifying-risk-vs-reward">Quantifying Risk vs Reward</h2>
+
+<p>Portfolio optimization requires the balancing of risk and return. We 
+know that the portfolio with the greatest expected return is not the 
+necessarily the one with least volatility. We will use historical 
+S&amp;P500 returns and calculate the variance of these returns as a 
+measure of ‘risk’.
+To quantify expected returns, I gathered 5-years worth of S&amp;P 500 
+Stock returns. The data was normalized to compute the simple returns. 
+Next, I needed to quantify risk - which is simply the variance of our 
+expected returns (the fluctuations in the expected returns over time). 
+Markowitz based his models on the assumption that returns are normally 
+distributed, therefore an estimation of variance can be obtained using 
+the covariance matrix of historical returns.</p>
+
+<h2 id="market-exposure">Market Exposure</h2>
+
+<p>We want to determine the market exposure for our each portfolio using
+ the covariance matrix of the returns. This is obtained by decomposing 
+the covariance matrix resulting in a vector of weights that represent 
+the percentage of total portfolio holdings (eigenvectors). This is done using an unsupervised learning technique called Principal Component Analysis (PCA). PCA helps us <strong>reduce</strong> the dataset by finding a set of equivalent features that retains 99% of the variance in the original data. The eigenvectors and eigenvalues determine the location and distance between each feature in the new dimensional space. 
+
+<pre class=" language-python"><code class=" language-python">pca <span class="token operator">=</span> PCA<span class="token punctuation">(</span><span class="token punctuation">)</span>
+pca<span class="token punctuation">.</span>fit<span class="token punctuation">(</span>covariance<span class="token punctuation">)</span>
+var_ratio <span class="token operator">=</span> np<span class="token punctuation">.</span>cumsum<span class="token punctuation">(</span>pca<span class="token punctuation">.</span>explained_variance_ratio_<span class="token punctuation">)</span>
+n_components <span class="token operator">=</span> np<span class="token punctuation">.</span>where<span class="token punctuation">(</span>np<span class="token punctuation">.</span>logical_not<span class="token punctuation">(</span>var_ratio <span class="token operator">&lt;</span> <span class="token number">0.8</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token operator">+</span><span class="token number">1</span>
+projected <span class="token operator">=</span> pca<span class="token punctuation">.</span>fit_transform<span class="token punctuation">(</span>covariance_raw<span class="token punctuation">)</span>
+logger<span class="token punctuation">.</span>info<span class="token punctuation">(</span><span class="token string">'Number of components {}'</span><span class="token punctuation">.</span><span class="token builtin">format</span><span class="token punctuation">(</span>n_components<span class="token punctuation">)</span><span class="token punctuation">)</span>
+</code></pre>
+
+Now, to We want to extract the components that make up 80% of the total variance (significant portfolios).</p> 
+
+<p><img src="PCA_Plot.png" alt="significant Portfolios">
+</p>
+
+<h3 id="portfolios-holdings">Portfolios Holdings</h3>
+
+<p>With the portfolios compiled, lets explore the top 5 holdings in each portfolio:</p>
+
+<p><strong>Portfolio 1: Sharpe Ratio - 7.82</strong></p>
+
+<table>
+<thead>
+<tr>
+<th>Ticker</th>
+<th>Holdings (%)</th>
+<th>Security Name</th>
+<th>Industry</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>ADI</td>
+<td>33.3474</td>
+<td>Analog Devices, Inc.</td>
+<td>Information Technology</td>
+</tr>
+
+<tr>
+<td>COO</td>
+<td>22.9322</td>
+<td>The Cooper Companies</td>
+<td>Health Care</td>
+</tr>
+
+<tr>
+<td>GOOG</td>
+<td>21.8156</td>
+<td>Alphabet Inc Class C</td>
+<td>Communication Services</td>
+</tr>
+
+<tr>
+<td>AON</td>
+<td>21.1057</td>
+<td>Aon plc</td>
+<td>Financials</td>
+</tr>
+
+<tr>
+<td>ADS</td>
+<td>19.6139</td>
+<td>Alliance Data Systems</td>
+<td>Information Technology</td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>Portfolio 2: Sharpe Ratio - 6.94</strong></p>
+
+<table>
+<thead>
+<tr>
+<th>Ticker</th>
+<th>Holdings (%)</th>
+<th>Security Name</th>
+<th>Industry</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>CL</td>
+<td>58.7249</td>
+<td>Colgate-Palmolive</td>
+<td>Consumer Staples</td>
+</tr>
+
+<tr>
+<td>BAX</td>
+<td>53.557</td>
+<td>Baxter International Inc.</td>
+<td>Health Care</td>
+</tr>
+
+<tr>
+<td>CFG</td>
+<td>53.1885</td>
+<td>Citizens Financial Group</td>
+<td>Financials</td>
+</tr>
+
+<tr>
+<td>CAH</td>
+<td>48.7005</td>
+<td>Cardinal Health Inc.</td>
+<td>Health Care</td>
+</tr>
+
+<tr>
+<td>CERN</td>
+<td>40.0978</td>
+<td>Cerner</td>
+<td>Health Care</td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>Portfolio 3: Sharpe Ratio - 7.24</strong></p>
+
+<table>
+<thead>
+<tr>
+<th>Ticker</th>
+<th>Holdings (%)</th>
+<th>Security Name</th>
+<th>Industry</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>ADI</td>
+<td>23.5063</td>
+<td>Analog Devices, Inc.</td>
+<td>Information Technology</td>
+</tr>
+
+<tr>
+<td>BAX</td>
+<td>22.192</td>
+<td>Baxter International Inc.</td>
+<td>Health Care</td>
+</tr>
+
+<tr>
+<td>CERN</td>
+<td>19.7601</td>
+<td>Cerner</td>
+<td>Health Care</td>
+</tr>
+
+<tr>
+<td>CB</td>
+<td>18.3078</td>
+<td>Chubb Limited</td>
+<td>Financials</td>
+</tr>
+
+<tr>
+<td>DLR</td>
+<td>18.2557</td>
+<td>Digital Realty Trust Inc</td>
+<td>Real Estate</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="portfolio-performance">Portfolio Performance</h3>
+
+<p>Now, lets look at each portfolio’s returns against the S&amp;P500. Portfolio 1 has the highest Sharpe Ratio, meaning it provides the best 'risk adjusted' rewards compared to the other portfolios. 
+
+<img src="Portfolios_combined_performance.png" alt="Portfolio Performance"></p>
+
+            </div>
+        </article>
+
+        <hr>
+
+        <div class="post-info">
+  			</div>
+
+        
+    </main>
+
+            </div>
+
+ <footer class="footer">
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>Ahmad Fahmy </span><span>© 2019</span>
+
+            <span></span>
+            
+        </div>
+    </div>
+    <div class="footer__inner">
+        <div class="footer__content">
+
+        </div>
+    </div>
+    <div class="footer__inner">
+        <div class="footer__content">
+        </div>
+    </div>
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+
+<script type="text/javascript" src="bundle.js" integrity="sha512-z3hx7UlHSoDtRXFU0k5h94ga2+D5OElRp0rEa2iKOaTb+mi8bTe66wWBht41Tq00h9Tufwg+pMuoYMSGALaU8w=="></script>
+
+
+
+    
+</body></html>
