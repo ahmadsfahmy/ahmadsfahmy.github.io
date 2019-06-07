@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="Time Series Analysis the Cozy Way Time series forecasting has significant importance in many practical areas from economics to workload planning . With the advancement of statistical methods, time series forecasting has become more accurate and robust compared to traditional methods. I will demonstrate how statistical methods such as gradient boosted trees, ensemble methods, deep learning and even linear regression compare to tradition methods of time series analysis such as ARIMA.">
+<meta name="keywords" content="">
+<meta name="robots" content="noodp">
+<link rel="canonical" href="http://127.0.0.1:4321/2019/06/07/time-series-forecasting-techniques/">
+
+
+<title>
+    
+    Time Series Forecasting Techniques :: F A H M Y . I O 
+    
+</title>
+
+
+
+<link href="timeseriesanalysis_files/flag-icon.css" rel="stylesheet" type="text/css">
+
+
+
+<link rel="stylesheet" href="main.css">
+
+
+
+<link rel="apple-touch-icon" sizes="180x180" href="http://127.0.0.1:4321/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://127.0.0.1:4321/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="http://127.0.0.1:4321/favicon-16x16.png">
+<link rel="manifest" href="http://127.0.0.1:4321/site.webmanifest">
+<link rel="mask-icon" href="http://127.0.0.1:4321/safari-pinned-tab.svg" color="#252627">
+<link rel="shortcut icon" href="http://127.0.0.1:4321/favicon.ico">
+<meta name="theme-color" content="#252627">
+<meta itemprop="name" content="Time Series Forecasting Techniques">
+<meta itemprop="description" content="Time Series Analysis the Cozy Way Time series forecasting has significant importance in many practical areas from economics to workload planning . With the advancement of statistical methods, time series forecasting has become more accurate and robust compared to traditional methods. I will demonstrate how statistical methods such as gradient boosted trees, ensemble methods, deep learning and even linear regression compare to tradition methods of time series analysis such as ARIMA.">
+
+
+<meta itemprop="datePublished" content="2019-06-07T00:00:00+00:00">
+<meta itemprop="dateModified" content="2019-06-07T00:00:00+00:00">
+<meta itemprop="wordCount" content="396">
+
+
+
+<meta itemprop="keywords" content="">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Time Series Forecasting Techniques">
+<meta name="twitter:description" content="Time Series Analysis the Cozy Way Time series forecasting has significant importance in many practical areas from economics to workload planning . With the advancement of statistical methods, time series forecasting has become more accurate and robust compared to traditional methods. I will demonstrate how statistical methods such as gradient boosted trees, ensemble methods, deep learning and even linear regression compare to tradition methods of time series analysis such as ARIMA.">
+
+
+
+
+<meta property="article:published_time" content="2019-06-07 00:00:00 +0000 UTC">
+
+
+
+
+
+
+
+    <script type="text/javascript">
+// automatically refresh the page when necessary (R will send a message to ws)
+(function() {
+  var protocol = 'ws:';
+  if (window.location.protocol === 'https:') protocol = 'wss:';
+  var path = window.location.pathname;
+  if (!/\/$/.test(path)) path += '/';
+  path += 'websocket/';
+
+  var ws = new WebSocket(protocol + '//' + window.location.host + path);
+  var flag;
+  ws.onmessage = function(evt) {
+    flag = true;
+    if (evt.data === 'false' || evt.data === 'null') return;
+    // fire a servr:reload event
+    Event && document.dispatchEvent(new Event('servr:reload'));
+    location.reload();
+  };
+  setInterval(function() {
+    if (flag === false || ws.readyState !== ws.OPEN) return;
+    flag = false;  // prevent ws message if R hasn't responded yet
+    ws.send('{}');
+  }, 1000);
+})();
+</script>
+</head>
+
+    <body class="dark-theme">
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="http://127.0.0.1:4321/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">&gt;</span>
+            <span class="logo__text">F A H M Y . I O</span>
+            <span class="logo__cursor"></span>
+        
+    </div>
+</a>
+
+
+    </span>
+</header>
+
+
+            <div class="content">
+                
+    <main class="post">
+
+        <div class="post-info">
+            
+            <p></p>
+        </div>
+
+        <article>
+            <h2 class="post-title"><a href="http://127.0.0.1:4321/2019/06/07/time-series-forecasting-techniques/">Time Series Forecasting Techniques Pt. 1</a></h2>
+
+            
+
+            <div class="post-content">
+                
+
+<p>Time series forecasting has significant importance in many practical areas from economics to workload planning. We are able to use modern machine learning techniques for time series analysis with a little tweaking to the data. Because supervised learning models learn from a set of features, we will need to perform some feature engineering to extract features from time-series data - which typically only contain a timestamp and label.</p>
+
+<p>For this example, I am going to forecast Crude Oil prices per barrel in US dollars using various ensemble Methods and compare the overall performance of each.</p>
+
+<p>The dataset provides the monthly price per barrel of crude oil in USD from Jan 1980 to May 2019. We can see a huge change in the price of oil after 2000 so I’m going to use this as a cutoff point.</p>
+
+<p>For this experiment, I will train each model on data from 2000 to 2017 and test from 2017 to present. To asses the model performance, I will use the root mean squared error metric which describes the average difference between the forecasted values vs the real value.</p>
+
+<h2 id="gradient-boosted-models">Gradient Boosted Models</h3>
+
+<p>Gradient Boosted Models work by sequentially adding predictors to an ensemble, each one fitting (and therefore correcting) to the residual error of its predecessor. Below are the predictions and the accuracy of the model:</p>
+
+<img src="xgb.png">
+
+<h5 id="model-details">Model Details</h5>
+
+<p>To understand how the model develops its prediction, let's look at how it places importance on the features:</p>
+
+<img src="xgb_feat_importance.png">
+
+<p>So we can see that the most emphasis on lag 6, 7 and 10 and 15 and the feature importance is fairly distributed. This means the model generalizes to the data without any regularization.</p>
+
+<h2 id="ensemble-methods">Ensemble Methods</h3>
+
+<p>Ensemble Methods, specifically Random Forests, train many decision trees on subsets of features and average the predictions. The forecast we get after training our random forest model is:</p>
+
+<img src="rf.png">
+
+<h5 id="model-details-1">Model Details</h5>
+
+<p>The top features that affect the output are as follows:</p>
+
+<img src="rf_feat_importance.png">
+
+<p>We can see that we might need to include some regularization in our model because of the overemphasis of feature Lag_6 - however, the model still performs well.
+To further understand how these models work, there are several diagnostic techniques we can use including dependency plots to see how much influence each feature actually has.</p>
+
+            </div>
+        </article>
+
+        <hr>
+
+        <div class="post-info">
+  			</div>
+
+        
+    </main>
+
+            </div>
+
+            
+                <footer class="footer">
+<div class="footer__inner">
+    <div class="footer__content">
+        <span>Ahmad Fahmy </span><span>© 2019</span>
+
+        <span></span>
+
+    </div>
+</div>
+<div class="footer__inner">
+    <div class="footer__content">
+
+    </div>
+</div>
+<div class="footer__inner">
+    <div class="footer__content">
+    </div>
+</div>
+</footer>
+
+
+            
+        </div>
+
+        
+
+
+
+
+<script type="text/javascript" src="tbundle.js" integrity="sha512-z3hx7UlHSoDtRXFU0k5h94ga2+D5OElRp0rEa2iKOaTb+mi8bTe66wWBht41Tq00h9Tufwg+pMuoYMSGALaU8w=="></script>
+
+
+
+    
+</body></html>
