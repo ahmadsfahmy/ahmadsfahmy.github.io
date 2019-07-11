@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<!-- saved from url=(0056)http://127.0.0.1:4321/2019/07/11/mortgage-risk-analysis/ -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="Mortgage Risk Analysis Mortgage risk analysis is the process used to determine how likely a borrower will default on a loan. This process is carried out by an underwriter who looks for specific areas of a borrower&amp;rsquo;s background for red flags including credit, capacity, cash flow, collateral, and character. While I am not an underwriter or an expert in credit risk, I am going to go through the process of identifying by developing a model on a borrower&amp;rsquo;s loan metadata and transactions throughout the life of the loan.">
+<meta name="keywords" content="">
+<meta name="robots" content="noodp">
+<link rel="canonical" href="http://127.0.0.1:4321/2019/07/11/mortgage-risk-analysis/">
+
+
+<title>
+    
+    Mortgage Risk Analysis :: F A H M Y . I O 
+    
+</title>
+
+
+
+<link rel="stylesheet" href="main.css">
+
+
+<link rel="apple-touch-icon" sizes="180x180" href="http://127.0.0.1:4321/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://127.0.0.1:4321/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="http://127.0.0.1:4321/favicon-16x16.png">
+<link rel="manifest" href="http://127.0.0.1:4321/site.webmanifest">
+<link rel="mask-icon" href="http://127.0.0.1:4321/safari-pinned-tab.svg" color="#252627">
+<link rel="shortcut icon" href="http://127.0.0.1:4321/favicon.ico">
+<meta name="theme-color" content="#252627">
+<meta itemprop="name" content="Mortgage Risk Analysis">
+<meta itemprop="description" content="Mortgage Risk Analysis Mortgage risk analysis is the process used to determine how likely a borrower will default on a loan. This process is carried out by an underwriter who looks for specific areas of a borrower’s background for red flags including credit, capacity, cash flow, collateral, and character. While I am not an underwriter or an expert in credit risk, I am going to go through the process of identifying by developing a model on a borrower’s loan metadata and transactions throughout the life of the loan.">
+
+
+<meta itemprop="datePublished" content="2019-07-11T00:00:00+00:00">
+<meta itemprop="dateModified" content="2019-07-11T00:00:00+00:00">
+<meta itemprop="wordCount" content="559">
+
+
+
+<meta itemprop="keywords" content="">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Mortgage Risk Analysis">
+<meta name="twitter:description" content="Mortgage Risk Analysis Mortgage risk analysis is the process used to determine how likely a borrower will default on a loan. This process is carried out by an underwriter who looks for specific areas of a borrower’s background for red flags including credit, capacity, cash flow, collateral, and character. While I am not an underwriter or an expert in credit risk, I am going to go through the process of identifying by developing a model on a borrower’s loan metadata and transactions throughout the life of the loan.">
+
+
+
+
+<meta property="article:published_time" content="2019-07-11 00:00:00 +0000 UTC">
+
+
+
+
+
+
+
+    <script type="text/javascript">
+// automatically refresh the page when necessary (R will send a message to ws)
+(function() {
+  var protocol = 'ws:';
+  if (window.location.protocol === 'https:') protocol = 'wss:';
+  var path = window.location.pathname;
+  if (!/\/$/.test(path)) path += '/';
+  path += 'websocket/';
+
+  var ws = new WebSocket(protocol + '//' + window.location.host + path);
+  var flag;
+  ws.onmessage = function(evt) {
+    flag = true;
+    if (evt.data === 'false' || evt.data === 'null') return;
+    // fire a servr:reload event
+    Event && document.dispatchEvent(new Event('servr:reload'));
+    location.reload();
+  };
+  setInterval(function() {
+    if (flag === false || ws.readyState !== ws.OPEN) return;
+    flag = false;  // prevent ws message if R hasn't responded yet
+    ws.send('{}');
+  }, 1000);
+})();
+</script>
+</head>
+
+    <body class="dark-theme">
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="http://127.0.0.1:4321/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">&gt;</span>
+            <span class="logo__text">F A H M Y . I O</span>
+            <span class="logo__cursor"></span>
+        
+    </div>
+</a>
+
+
+    </span>
+</header>
+
+
+            <div class="content">
+                
+    <main class="post">
+
+        <div class="post-info">
+            
+            <p></p>
+        </div>
+
+        <article>
+            <h2 class="post-title"><a href="http://127.0.0.1:4321/2019/07/11/mortgage-risk-analysis/">Mortgage Risk Analysis</a></h2>
+
+            
+
+            <div class="post-content">
+
+<p>Mortgage risk analysis is the process used to determine how likely a borrower will default on a loan. This process is carried out by an underwriter who looks for specific areas of a borrower’s background for red flags including credit, capacity, cash flow, collateral, and character. While I am not an underwriter or an expert in credit risk, I am going to go through the process of identifying by developing a model on a borrower’s loan metadata and transactions throughout the life of the loan. The partition of data I’m working with contains details of roughly 5 million mortgages purchased between 2000 and 2001 and is available through Fannie Mae’s Single Family Loan Performance dataset. ## Exploring the Data The dataset contains a total of 28 unique lenders representing brokers, retail lenders and direct lenders offering Fixed Rate Mortgage loans to borrowers. 76% of loans originated through a retail lender or broker with an average value of $135K and a max of 500K.</p><img src="EDA_LENDERS_AVG.png" alt="EDA_LENDERS_AVG"> <p>Borrowers represent all territories of the US including Puerto Rico. While the majority of borrowers purchased loans for a primary residence, almost 10% is used for a secondary home or investment properties. The most popular location for a property is California, making up 13% of all properties purchased, which add up to $100B in total loans. </p><img src="EDA_TOTAL_LENT.png" alt="EDA_TOTAL_LENT">
+
+<h2 id="risk-analysis">Risk Analysis</h2>
+
+<p>For a loan to go into default status, it must be 90+ days delinquent in payment. To gather this data, I summarized the transactions of each account and flagged delinquent payments and the frequency of delinquency. I use these two values to make up a composite score called ‘risk score’ — which is the multiplicative relationship between the number of late payments and the maximum duration of delinquency. Finally, each account is grouped into one of three categories: Low (Q1), Medium (Q2-3) and High Risk (Q4). An example of a low-risk borrow may have been 20-30 days late on 1 or 2 payments throughout the life of their loan. A high-risk borrow may have been 60-90 days late on 10+ payments with their account being in delinquent status for several months. From 2000 to 2001, 25% of all loans purchased went into default. The total value of default loans ranges from 1%-6% of total sales — equating to 100s of millions of dollars. <img src="default_impact.png" alt=""> ## Results The most pertinent factors in determining a loan default are the number of borrowers and the loan to value ratio. Lenders allow borrowers to take on a loan with up to 10 borrowers. Isolating this data point shows that as each additional borrower is added, and thus responsible for payment, the probability of default declines.</p><img src="PDP_NUM_BORROWERS.png" alt="PDP_NUM_BORROWERS"> <p>Loan to Value (LTV) ratio — the ratio of the amount borrowed vs the value of the property. For example, if you took out a mortgage for $100K and your property is $300K, your LTV is 33%. Usually, sellers will give borrowers better rates on their loan if their LTV is below 80% because they have more equity in the property. Isolating this variable shows that borrowers with a high LTV (75% and above) have a higher probability of default.</p> 
+<img src="PDP_LTV.png" alt="PDP_LTV"> 
+<p>So if you’re planning to buy a mortgage on your own, you have a better chance of being approved if you have a substantial down payment (to lower your LTV) otherwise consider adding on co-borrowers.</p>
+
+            </div>
+        </article>
+
+        <hr>
+
+        <div class="post-info">
+  			</div>
+
+        
+    </main>
+
+            </div>
+
+            
+                              <footer class="footer">
+<div class="footer__inner">
+    <div class="footer__content">
+        <span>Ahmad Fahmy </span><span>© 2019</span>
+
+        <span></span>
+
+    </div>
+</div>
+<div class="footer__inner">
+    <div class="footer__content">
+
+    </div>
+</div>
+<div class="footer__inner">
+    <div class="footer__content">
+    </div>
+</div>
+</footer>
+
+
+            
+      
+            
+        </div>
+
+        
+
+
+
+
+<script type="text/javascript" src="bundle.js" integrity="sha512-z3hx7UlHSoDtRXFU0k5h94ga2+D5OElRp0rEa2iKOaTb+mi8bTe66wWBht41Tq00h9Tufwg+pMuoYMSGALaU8w=="></script>
+
+
+
+
+    
+</body></html>

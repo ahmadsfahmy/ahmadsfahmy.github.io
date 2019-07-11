@@ -583,7 +583,7 @@ body {
   margin: 0;
   padding: 0;
   font-family: 'SourceCodeVariable-Roman', monospace;
-  font-size: 1rem;
+  font-size: .8rem;
   line-height: 1.54;
   background-color: #fff;
   color: #222;
@@ -599,7 +599,7 @@ body {
 
 @media(max-width:684px) {
   body {
-    font-size: 1rem
+    font-size: .8rem
   }
 }
 
