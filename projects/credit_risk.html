@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<!-- saved from url=(0045)http://127.0.0.1:4321/2019/08/23/credit-risk/ -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="After my last post on risk analysis, I thought it would be beneficial to spend some time exploring different unsupervised techniques.
+The most common unsupervised technique is clustering; given an unlabeled dataset - what underlying structure can we uncover from the data? This can produce some significant insight - such as detecting outliers. An outlier is a data point that is &amp;lsquo;abnormal&amp;rsquo; - it is rare and out of regular bounds.">
+<meta name="keywords" content="">
+<meta name="robots" content="noodp">
+<link rel="canonical" href="http://127.0.0.1:4321/2019/08/23/credit-risk/">
+
+
+<title>
+    
+    Credit Risk :: F A H M Y . I O 
+    
+</title>
+
+
+
+
+<link href="flag-icon.min.css" rel="stylesheet" type="text/css">
+
+
+
+<link rel="stylesheet" href="main.css">
+
+
+
+<link rel="apple-touch-icon" sizes="180x180" href="http://127.0.0.1:4321/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://127.0.0.1:4321/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="http://127.0.0.1:4321/favicon-16x16.png">
+<link rel="manifest" href="http://127.0.0.1:4321/site.webmanifest">
+<link rel="mask-icon" href="http://127.0.0.1:4321/safari-pinned-tab.svg" color="#252627">
+<link rel="shortcut icon" href="http://127.0.0.1:4321/favicon.ico">
+<meta name="theme-color" content="#252627">
+<meta itemprop="name" content="Credit Risk">
+<meta itemprop="description" content="After my last post on risk analysis, I thought it would be beneficial to spend some time exploring different unsupervised techniques.
+The most common unsupervised technique is clustering; given an unlabeled dataset - what underlying structure can we uncover from the data? This can produce some significant insight - such as detecting outliers. An outlier is a data point that is ‘abnormal’ - it is rare and out of regular bounds.">
+
+
+<meta itemprop="datePublished" content="2019-08-23T00:00:00+00:00">
+<meta itemprop="dateModified" content="2019-08-23T00:00:00+00:00">
+<meta itemprop="wordCount" content="838">
+
+
+
+<meta itemprop="keywords" content="">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Credit Risk">
+<meta name="twitter:description" content="After my last post on risk analysis, I thought it would be beneficial to spend some time exploring different unsupervised techniques.
+The most common unsupervised technique is clustering; given an unlabeled dataset - what underlying structure can we uncover from the data? This can produce some significant insight - such as detecting outliers. An outlier is a data point that is ‘abnormal’ - it is rare and out of regular bounds.">
+
+
+
+
+<meta property="article:published_time" content="2019-08-23 00:00:00 +0000 UTC">
+
+
+
+
+
+
+
+    <script type="text/javascript">
+// automatically refresh the page when necessary (R will send a message to ws)
+(function() {
+  var protocol = 'ws:';
+  if (window.location.protocol === 'https:') protocol = 'wss:';
+  var path = window.location.pathname;
+  if (!/\/$/.test(path)) path += '/';
+  path += 'websocket/';
+
+  var ws = new WebSocket(protocol + '//' + window.location.host + path);
+  var flag;
+  ws.onmessage = function(evt) {
+    flag = true;
+    if (evt.data === 'false' || evt.data === 'null') return;
+    // fire a servr:reload event
+    Event && document.dispatchEvent(new Event('servr:reload'));
+    location.reload();
+  };
+  setInterval(function() {
+    if (flag === false || ws.readyState !== ws.OPEN) return;
+    flag = false;  // prevent ws message if R hasn't responded yet
+    ws.send('{}');
+  }, 1000);
+})();
+</script>
+<style type="text/css">.MathJax_Hover_Frame {border-radius: .25em; -webkit-border-radius: .25em; -moz-border-radius: .25em; -khtml-border-radius: .25em; box-shadow: 0px 0px 15px #83A; -webkit-box-shadow: 0px 0px 15px #83A; -moz-box-shadow: 0px 0px 15px #83A; -khtml-box-shadow: 0px 0px 15px #83A; border: 1px solid #A6D ! important; display: inline-block; position: absolute}
+.MathJax_Menu_Button .MathJax_Hover_Arrow {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 4px; -webkit-border-radius: 4px; -moz-border-radius: 4px; -khtml-border-radius: 4px; font-family: 'Courier New',Courier; font-size: 9px; color: #F0F0F0}
+.MathJax_Menu_Button .MathJax_Hover_Arrow span {display: block; background-color: #AAA; border: 1px solid; border-radius: 3px; line-height: 0; padding: 4px}
+.MathJax_Hover_Arrow:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_Hover_Arrow:hover span {background-color: #CCC!important}
+</style><style type="text/css">#MathJax_About {position: fixed; left: 50%; width: auto; text-align: center; border: 3px outset; padding: 1em 2em; background-color: #DDDDDD; color: black; cursor: default; font-family: message-box; font-size: 120%; font-style: normal; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; border-radius: 15px; -webkit-border-radius: 15px; -moz-border-radius: 15px; -khtml-border-radius: 15px; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_About.MathJax_MousePost {outline: none}
+.MathJax_Menu {position: absolute; background-color: white; color: black; width: auto; padding: 5px 0px; border: 1px solid #CCCCCC; margin: 0; cursor: default; font: menu; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; border-radius: 5px; -webkit-border-radius: 5px; -moz-border-radius: 5px; -khtml-border-radius: 5px; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+.MathJax_MenuItem {padding: 1px 2em; background: transparent}
+.MathJax_MenuArrow {position: absolute; right: .5em; padding-top: .25em; color: #666666; font-size: .75em}
+.MathJax_MenuActive .MathJax_MenuArrow {color: white}
+.MathJax_MenuArrow.RTL {left: .5em; right: auto}
+.MathJax_MenuCheck {position: absolute; left: .7em}
+.MathJax_MenuCheck.RTL {right: .7em; left: auto}
+.MathJax_MenuRadioCheck {position: absolute; left: .7em}
+.MathJax_MenuRadioCheck.RTL {right: .7em; left: auto}
+.MathJax_MenuLabel {padding: 1px 2em 3px 1.33em; font-style: italic}
+.MathJax_MenuRule {border-top: 1px solid #DDDDDD; margin: 4px 3px}
+.MathJax_MenuDisabled {color: GrayText}
+.MathJax_MenuActive {background-color: #606872; color: white}
+.MathJax_MenuDisabled:focus, .MathJax_MenuLabel:focus {background-color: #E8E8E8}
+.MathJax_ContextMenu:focus {outline: none}
+.MathJax_ContextMenu .MathJax_MenuItem:focus {outline: none}
+#MathJax_AboutClose {top: .2em; right: .2em}
+.MathJax_Menu .MathJax_MenuClose {top: -10px; left: -10px}
+.MathJax_MenuClose {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; font-family: 'Courier New',Courier; font-size: 24px; color: #F0F0F0}
+.MathJax_MenuClose span {display: block; background-color: #AAA; border: 1.5px solid; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; line-height: 0; padding: 8px 0 6px}
+.MathJax_MenuClose:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_MenuClose:hover span {background-color: #CCC!important}
+.MathJax_MenuClose:hover:focus {outline: none}
+</style><style type="text/css">.MathJax_Preview .MJXf-math {color: inherit!important}
+</style><style type="text/css">.MJX_Assistive_MathML {position: absolute!important; top: 0; left: 0; clip: rect(1px, 1px, 1px, 1px); padding: 1px 0 0 0!important; border: 0!important; height: 1px!important; width: 1px!important; overflow: hidden!important; display: block!important; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none}
+.MJX_Assistive_MathML.MJX_Assistive_MathML_Block {width: 100%!important}
+</style><style type="text/css">#MathJax_Zoom {position: absolute; background-color: #F0F0F0; overflow: auto; display: block; z-index: 301; padding: .5em; border: 1px solid black; margin: 0; font-weight: normal; font-style: normal; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; -webkit-box-sizing: content-box; -moz-box-sizing: content-box; box-sizing: content-box; box-shadow: 5px 5px 15px #AAAAAA; -webkit-box-shadow: 5px 5px 15px #AAAAAA; -moz-box-shadow: 5px 5px 15px #AAAAAA; -khtml-box-shadow: 5px 5px 15px #AAAAAA; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_ZoomOverlay {position: absolute; left: 0; top: 0; z-index: 300; display: inline-block; width: 100%; height: 100%; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+#MathJax_ZoomFrame {position: relative; display: inline-block; height: 0; width: 0}
+#MathJax_ZoomEventTrap {position: absolute; left: 0; top: 0; z-index: 302; display: inline-block; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+</style><style type="text/css">.MathJax_Preview {color: #888}
+#MathJax_Message {position: fixed; left: 1em; bottom: 1.5em; background-color: #E6E6E6; border: 1px solid #959595; margin: 0px; padding: 2px 8px; z-index: 102; color: black; font-size: 80%; width: auto; white-space: nowrap}
+#MathJax_MSIE_Frame {position: absolute; top: 0; left: 0; width: 0px; z-index: 101; border: 0px; margin: 0px; padding: 0px}
+.MathJax_Error {color: #CC0000; font-style: italic}
+</style><style type="text/css">.MJXp-script {font-size: .8em}
+.MJXp-right {-webkit-transform-origin: right; -moz-transform-origin: right; -ms-transform-origin: right; -o-transform-origin: right; transform-origin: right}
+.MJXp-bold {font-weight: bold}
+.MJXp-italic {font-style: italic}
+.MJXp-scr {font-family: MathJax_Script,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-frak {font-family: MathJax_Fraktur,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-sf {font-family: MathJax_SansSerif,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-cal {font-family: MathJax_Caligraphic,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-mono {font-family: MathJax_Typewriter,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-largeop {font-size: 150%}
+.MJXp-largeop.MJXp-int {vertical-align: -.2em}
+.MJXp-math {display: inline-block; line-height: 1.2; text-indent: 0; font-family: 'Times New Roman',Times,STIXGeneral,serif; white-space: nowrap; border-collapse: collapse}
+.MJXp-display {display: block; text-align: center; margin: 1em 0}
+.MJXp-math span {display: inline-block}
+.MJXp-box {display: block!important; text-align: center}
+.MJXp-box:after {content: " "}
+.MJXp-rule {display: block!important; margin-top: .1em}
+.MJXp-char {display: block!important}
+.MJXp-mo {margin: 0 .15em}
+.MJXp-mfrac {margin: 0 .125em; vertical-align: .25em}
+.MJXp-denom {display: inline-table!important; width: 100%}
+.MJXp-denom > * {display: table-row!important}
+.MJXp-surd {vertical-align: top}
+.MJXp-surd > * {display: block!important}
+.MJXp-script-box > *  {display: table!important; height: 50%}
+.MJXp-script-box > * > * {display: table-cell!important; vertical-align: top}
+.MJXp-script-box > *:last-child > * {vertical-align: bottom}
+.MJXp-script-box > * > * > * {display: block!important}
+.MJXp-mphantom {visibility: hidden}
+.MJXp-munderover, .MJXp-munder {display: inline-table!important}
+.MJXp-over {display: inline-block!important; text-align: center}
+.MJXp-over > * {display: block!important}
+.MJXp-munderover > *, .MJXp-munder > * {display: table-row!important}
+.MJXp-mtable {vertical-align: .25em; margin: 0 .125em}
+.MJXp-mtable > * {display: inline-table!important; vertical-align: middle}
+.MJXp-mtr {display: table-row!important}
+.MJXp-mtd {display: table-cell!important; text-align: center; padding: .5em 0 0 .5em}
+.MJXp-mtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-mlabeledtr {display: table-row!important}
+.MJXp-mlabeledtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mlabeledtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-merror {background-color: #FFFF88; color: #CC0000; border: 1px solid #CC0000; padding: 1px 3px; font-style: normal; font-size: 90%}
+.MJXp-scale0 {-webkit-transform: scaleX(.0); -moz-transform: scaleX(.0); -ms-transform: scaleX(.0); -o-transform: scaleX(.0); transform: scaleX(.0)}
+.MJXp-scale1 {-webkit-transform: scaleX(.1); -moz-transform: scaleX(.1); -ms-transform: scaleX(.1); -o-transform: scaleX(.1); transform: scaleX(.1)}
+.MJXp-scale2 {-webkit-transform: scaleX(.2); -moz-transform: scaleX(.2); -ms-transform: scaleX(.2); -o-transform: scaleX(.2); transform: scaleX(.2)}
+.MJXp-scale3 {-webkit-transform: scaleX(.3); -moz-transform: scaleX(.3); -ms-transform: scaleX(.3); -o-transform: scaleX(.3); transform: scaleX(.3)}
+.MJXp-scale4 {-webkit-transform: scaleX(.4); -moz-transform: scaleX(.4); -ms-transform: scaleX(.4); -o-transform: scaleX(.4); transform: scaleX(.4)}
+.MJXp-scale5 {-webkit-transform: scaleX(.5); -moz-transform: scaleX(.5); -ms-transform: scaleX(.5); -o-transform: scaleX(.5); transform: scaleX(.5)}
+.MJXp-scale6 {-webkit-transform: scaleX(.6); -moz-transform: scaleX(.6); -ms-transform: scaleX(.6); -o-transform: scaleX(.6); transform: scaleX(.6)}
+.MJXp-scale7 {-webkit-transform: scaleX(.7); -moz-transform: scaleX(.7); -ms-transform: scaleX(.7); -o-transform: scaleX(.7); transform: scaleX(.7)}
+.MJXp-scale8 {-webkit-transform: scaleX(.8); -moz-transform: scaleX(.8); -ms-transform: scaleX(.8); -o-transform: scaleX(.8); transform: scaleX(.8)}
+.MJXp-scale9 {-webkit-transform: scaleX(.9); -moz-transform: scaleX(.9); -ms-transform: scaleX(.9); -o-transform: scaleX(.9); transform: scaleX(.9)}
+.MathJax_PHTML .noError {vertical-align: ; font-size: 90%; text-align: left; color: black; padding: 1px 3px; border: 1px solid}
+</style></head>
+
+    <body class="dark-theme" cz-shortcut-listen="true"><div id="MathJax_Message" style="display: none;"></div>
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="http://127.0.0.1:4321/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">&gt;</span>
+            <span class="logo__text">F A H M Y . I O</span>
+            <span class="logo__cursor"></span>
+        
+    </div>
+</a>
+
+
+    </span>
+</header>
+
+
+            <div class="content">
+                
+    <main class="post">
+
+        <div class="post-info">
+            
+            <p></p>
+        </div>
+
+        <article>
+            <h2 class="post-title">Unsupervised Outlier Detection and Credit Risk</a></h2>
+
+            
+
+            <div class="post-content">
+                
+
+<p>The most common unsupervised technique is clustering; given an unlabeled dataset - what underlying structure can we uncover from the data? This can produce some significant insight - such as detecting outliers. An outlier is a data point that is ‘abnormal’ - it is rare and out of regular bounds. Outlier detection has applications in many fields, namely finance. As we adopt digital platforms to manage our transactions, financial institutions need to develop robust, real-time methods of detecting outliers to protect its customers from fraud. </p>
+
+<p>To illustrate these methods, I will use the German Credit dataset - a set of 1000 people who opened a line of credit for various reasons and discard the labels. The goal is to identify and interpret the outliers.</p>
+
+<h2 id="looking-at-the-data"><strong>Looking at the Data</strong></h2>
+
+<p>We can make some quick observations about the dataset:</p>
+
+<p>Borrower age ranges from 20 to mid-70s. The average age in the mid-30s. Credit lines can be as high as DM 20,000, however the majority of borrowers take out between DM 5,000 - DM 10,000. Borrowers tend to use their line of credit for a car or a furniture/TV. Most borrowers set their repayment duration between 10-25 months. There is some correlation between credit amount and duration. </p>
+
+<p><img src="feature_pairplot.png" alt="PAIRPLOT"></p>
+
+<h2 id="outlier-detection-techniques"><strong>Outlier Detection Techniques</strong></h2>
+
+<p>K-Nearest Neighbors (KNN) is the most commonly used clustering technique. The number of clusters is selected manually using methods like the Elbow Curve then the algorithm recursively assigns each data point to a cluster while shifting the centermost point (aka centroid) to minimize the average distance between itself and its assigned points. Outliers are points furthest from their assigned cluster.</p>
+
+<p>A similar clustering technique called Angle-Based Objected Detection (ABOD) clusters data points then assesses the weighted variance over all possible combination of points in a cluster. The weights are determined by the points distance from the center. The intuition behind this method is that KNN and similar distance-based metric models diminish in quality as dimensionality increases.</p>
+
+<p>Finally, a method called Isolation Forest - similar to Random Forest - is an ensemble method that recursively splits data on some arbitrary feature and value. The intuition is that outliers will be ‘isolated’ after a few splits (i.e. outliers are closer to the root node).</p>
+
+<p>The plot below shows how each model flags outliers:</p>
+
+<p><img src="COMMON_OUTLIERS.png" alt="COMMON OUTLIERS"></p>
+
+<p>We can see that ABOD is more sensitive than other models as it flags far more data points as outliers.</p>
+
+<h2 id="assessing-results"><strong>Assessing Results</strong></h2>
+
+<p>Assessing the performance of an unsupervised model isn’t straight forward since there is no way to test accuracy against labled data and therefore highly dependent on the use case and context. In this case, credit risk, we can gauge an outlier’s true risk based on their profile compared to all other borrowers and borrowers of similar demographics.</p>
+
+<p>Let us take a look at a few commonly flagged outlier:</p>
+
+<p>Low-Risk Outlier:</p>
+
+<pre><code>Borrower Profile:
+╔═════════════════════════════╦════════╗
+║ AGE                         ║   54.0 ║
+║ CREDIT_AMT                  ║ 3051.0 ║
+║ DURATION                    ║   48.0 ║
+║ SEX_male                    ║    1.0 ║
+║ JOB_SKILLED                 ║    1.0 ║
+║ SAVINGS_AMT_little          ║    1.0 ║
+║ CHECKING_AMT_little         ║    1.0 ║
+║ HOUSING_own                 ║    1.0 ║
+║ PURPOSE_domestic_appliances ║    1.0 ║
+║ RESIDENT_YES                ║    1.0 ║
+║ INCOME_INDICATOR_MED        ║    1.0 ║
+╚═════════════════════════════╩════════╝
+</code></pre>
+
+<p>The borrower’s profile puts him on the further end of the bell curve in several categories:  The amount of credit and duration he has taken out for appliances is extremely high, the average being around DM 1,250 over 13 months. The typical demographic of appliance purchasers are 32 year old home owners with a medium level income with a skilled job.</p>
+
+<p><img src="force_plot_813.png" alt="FORCE PLOT"></p>
+
+<p>Moderate Risk Outlier:</p>
+
+<pre><code>Borrower Profile:
+╔══════════════════════╦════════╗
+║ AGE                  ║   75.0 ║
+║ CREDIT_AMT           ║ 6615.0 ║
+║ DURATION             ║   24.0 ║
+║ SEX_male             ║    1.0 ║
+║ JOB_HIGH_SKILLED     ║    1.0 ║
+║ SAVINGS_AMT_little   ║    1.0 ║
+║ CHECKING_AMT_little  ║    1.0 ║
+║ HOUSING_free         ║    1.0 ║
+║ PURPOSE_car          ║    1.0 ║
+║ RESIDENT_YES         ║    1.0 ║
+║ INCOME_INDICATOR_MED ║    1.0 ║
+╚══════════════════════╩════════╝
+</code></pre>
+
+<p>Looking at the Shapley values, we see that the biggest factors that impact the outcome are age, credit amount, amount of savings and  that he is not a homeowner.</p>
+
+<p><img src="force_plot_330.png" alt="FORCE PLOT"></p>
+
+<p>High Risk Outlier:</p>
+
+<pre><code>Borrower Profile:
+╔════════════════════════╦═════════╗
+║ AGE                    ║    44.0 ║
+║ CREDIT_AMT             ║ 10127.0 ║
+║ DURATION               ║    48.0 ║
+║ SEX_male               ║     1.0 ║
+║ JOB_SKILLED            ║     1.0 ║
+║ SAVINGS_AMT_quite_rich ║     1.0 ║
+║ CHECKING_AMT_NaN       ║     1.0 ║
+║ HOUSING_free           ║     1.0 ║
+║ PURPOSE_car            ║     1.0 ║
+║ RESIDENT_YES           ║     1.0 ║
+║ INCOME_INDICATOR_MED   ║     1.0 ║
+╚════════════════════════╩═════════╝
+</code></pre>
+
+<p><img src="force_plot_304.png" alt="FORCE PLOT"></p>
+
+<p>Finally, this borrower is flagged as a high risk. Even though he has a large savings amount, there is no information about his available funds (CHECKING_AMT) which hurts his overall income indicator. On top of that, 70% borrowers in his age bracket are homeowners.</p>
+
+            </div>
+        </article>
+
+        <hr>
+
+        <div class="post-info">
+  			</div>
+
+        
+    </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>Ahmad Fahmy </span><span>© 2019</span>
+
+            <span></span>
+
+        </div>
+    </div>
+    <div class="footer__inner">
+        <div class="footer__content">
+
+        </div>
+    </div>
+    <div class="footer__inner">
+        <div class="footer__content">
+        </div>
+    </div>
+</footer>
+
+<script async="" src="MathJax.js">
+</script>
+            
+        </div>
+        
+
+
+
+
+<script type="text/javascript" src="bundle.js" integrity="sha512-z3hx7UlHSoDtRXFU0k5h94ga2+D5OElRp0rEa2iKOaTb+mi8bTe66wWBht41Tq00h9Tufwg+pMuoYMSGALaU8w=="></script>
+
+
+    
+</body></html>
