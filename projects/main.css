@@ -605,7 +605,7 @@ body {
 
 body.dark-theme {
   background-color: #292a2d;
-  color: #fefefe
+  color: #a9a9b3;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -714,7 +714,7 @@ code {
   padding: 1px 6px;
   margin: 0 2px;
   border-radius: 5px;
-  font-size: .95rem
+  font-size: .8rem
 }
 
 .dark-theme code {
@@ -725,7 +725,7 @@ pre {
   background: #212020;
   padding: 20px;
   border-radius: 8px;
-  font-size: .95rem;
+  font-size: .8rem;
   overflow: auto
 }
 
