@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<!-- saved from url=(0061)http://127.0.0.1:4321/2019/09/28/advanced-linear-programming/ -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="What is Julia? Julia is a general purpose dynamic programming language that supports mathematical and statistical operations similar to R and vectorized numerical functions similar to MATLAB all with python-like syntax - making ideal for high-performance scientific computing. Julia&amp;rsquo;s current ecosystem is mature enough to build and deploy analytics web applications, making it a serious contender to R and Python.
+Julia has some unique features unavailable in current langauges used for scientific computing, including native support for parallel and distributed computing and an extensive library - most of the popular computing libraries available in python such as SciKit Learn and Tensorflow are available in Julia&amp;rsquo;s package manager and python-only packages can be utilized via PyCall.">
+<meta name="keywords" content="">
+<meta name="robots" content="noodp">
+<link rel="canonical" href="http://127.0.0.1:4321/2019/09/28/advanced-linear-programming/">
+
+
+<title>
+    
+    Julia for Scientific Computing :: F A H M Y . I O 
+    
+</title>
+
+
+
+<link href="flag-icon.css" rel="stylesheet" type="text/css">
+
+
+
+<link rel="stylesheet" href="main.css">
+
+
+
+<link rel="apple-touch-icon" sizes="180x180" href="http://127.0.0.1:4321/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://127.0.0.1:4321/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="http://127.0.0.1:4321/favicon-16x16.png">
+<link rel="manifest" href="http://127.0.0.1:4321/site.webmanifest">
+<link rel="mask-icon" href="http://127.0.0.1:4321/safari-pinned-tab.svg" color="#252627">
+<link rel="shortcut icon" href="http://127.0.0.1:4321/favicon.ico">
+<meta name="theme-color" content="#252627">
+<meta itemprop="name" content="Julia for Scientific Computing">
+<meta itemprop="description" content="What is Julia? Julia is a general purpose dynamic programming language that supports mathematical and statistical operations similar to R and vectorized numerical functions similar to MATLAB all with python-like syntax - making ideal for high-performance scientific computing. Julia’s current ecosystem is mature enough to build and deploy analytics web applications, making it a serious contender to R and Python.
+Julia has some unique features unavailable in current langauges used for scientific computing, including native support for parallel and distributed computing and an extensive library - most of the popular computing libraries available in python such as SciKit Learn and Tensorflow are available in Julia’s package manager and python-only packages can be utilized via PyCall.">
+
+
+<meta itemprop="datePublished" content="2019-09-28T00:00:00+00:00">
+<meta itemprop="dateModified" content="2019-09-28T00:00:00+00:00">
+<meta itemprop="wordCount" content="402">
+
+
+
+<meta itemprop="keywords" content="">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Julia for Scientific Computing">
+<meta name="twitter:description" content="What is Julia? Julia is a general purpose dynamic programming language that supports mathematical and statistical operations similar to R and vectorized numerical functions similar to MATLAB all with python-like syntax - making ideal for high-performance scientific computing. Julia’s current ecosystem is mature enough to build and deploy analytics web applications, making it a serious contender to R and Python.
+Julia has some unique features unavailable in current langauges used for scientific computing, including native support for parallel and distributed computing and an extensive library - most of the popular computing libraries available in python such as SciKit Learn and Tensorflow are available in Julia’s package manager and python-only packages can be utilized via PyCall.">
+
+
+
+
+<meta property="article:published_time" content="2019-09-28 00:00:00 +0000 UTC">
+
+
+
+
+
+
+
+    <script type="text/javascript">
+// automatically refresh the page when necessary (R will send a message to ws)
+(function() {
+  var protocol = 'ws:';
+  if (window.location.protocol === 'https:') protocol = 'wss:';
+  var path = window.location.pathname;
+  if (!/\/$/.test(path)) path += '/';
+  path += 'websocket/';
+
+  var ws = new WebSocket(protocol + '//' + window.location.host + path);
+  var flag;
+  ws.onmessage = function(evt) {
+    flag = true;
+    if (evt.data === 'false' || evt.data === 'null') return;
+    // fire a servr:reload event
+    Event && document.dispatchEvent(new Event('servr:reload'));
+    location.reload();
+  };
+  setInterval(function() {
+    if (flag === false || ws.readyState !== ws.OPEN) return;
+    flag = false;  // prevent ws message if R hasn't responded yet
+    ws.send('{}');
+  }, 1000);
+})();
+</script>
+<style type="text/css">.MathJax_Hover_Frame {border-radius: .25em; -webkit-border-radius: .25em; -moz-border-radius: .25em; -khtml-border-radius: .25em; box-shadow: 0px 0px 15px #83A; -webkit-box-shadow: 0px 0px 15px #83A; -moz-box-shadow: 0px 0px 15px #83A; -khtml-box-shadow: 0px 0px 15px #83A; border: 1px solid #A6D ! important; display: inline-block; position: absolute}
+.MathJax_Menu_Button .MathJax_Hover_Arrow {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 4px; -webkit-border-radius: 4px; -moz-border-radius: 4px; -khtml-border-radius: 4px; font-family: 'Courier New',Courier; font-size: 9px; color: #F0F0F0}
+.MathJax_Menu_Button .MathJax_Hover_Arrow span {display: block; background-color: #AAA; border: 1px solid; border-radius: 3px; line-height: 0; padding: 4px}
+.MathJax_Hover_Arrow:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_Hover_Arrow:hover span {background-color: #CCC!important}
+</style><style type="text/css">#MathJax_About {position: fixed; left: 50%; width: auto; text-align: center; border: 3px outset; padding: 1em 2em; background-color: #DDDDDD; color: black; cursor: default; font-family: message-box; font-size: 120%; font-style: normal; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; border-radius: 15px; -webkit-border-radius: 15px; -moz-border-radius: 15px; -khtml-border-radius: 15px; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_About.MathJax_MousePost {outline: none}
+.MathJax_Menu {position: absolute; background-color: white; color: black; width: auto; padding: 5px 0px; border: 1px solid #CCCCCC; margin: 0; cursor: default; font: menu; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; border-radius: 5px; -webkit-border-radius: 5px; -moz-border-radius: 5px; -khtml-border-radius: 5px; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+.MathJax_MenuItem {padding: 1px 2em; background: transparent}
+.MathJax_MenuArrow {position: absolute; right: .5em; padding-top: .25em; color: #666666; font-size: .75em}
+.MathJax_MenuActive .MathJax_MenuArrow {color: white}
+.MathJax_MenuArrow.RTL {left: .5em; right: auto}
+.MathJax_MenuCheck {position: absolute; left: .7em}
+.MathJax_MenuCheck.RTL {right: .7em; left: auto}
+.MathJax_MenuRadioCheck {position: absolute; left: .7em}
+.MathJax_MenuRadioCheck.RTL {right: .7em; left: auto}
+.MathJax_MenuLabel {padding: 1px 2em 3px 1.33em; font-style: italic}
+.MathJax_MenuRule {border-top: 1px solid #DDDDDD; margin: 4px 3px}
+.MathJax_MenuDisabled {color: GrayText}
+.MathJax_MenuActive {background-color: #606872; color: white}
+.MathJax_MenuDisabled:focus, .MathJax_MenuLabel:focus {background-color: #E8E8E8}
+.MathJax_ContextMenu:focus {outline: none}
+.MathJax_ContextMenu .MathJax_MenuItem:focus {outline: none}
+#MathJax_AboutClose {top: .2em; right: .2em}
+.MathJax_Menu .MathJax_MenuClose {top: -10px; left: -10px}
+.MathJax_MenuClose {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; font-family: 'Courier New',Courier; font-size: 24px; color: #F0F0F0}
+.MathJax_MenuClose span {display: block; background-color: #AAA; border: 1.5px solid; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; line-height: 0; padding: 8px 0 6px}
+.MathJax_MenuClose:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_MenuClose:hover span {background-color: #CCC!important}
+.MathJax_MenuClose:hover:focus {outline: none}
+</style><style type="text/css">.MathJax_Preview .MJXf-math {color: inherit!important}
+</style><style type="text/css">.MJX_Assistive_MathML {position: absolute!important; top: 0; left: 0; clip: rect(1px, 1px, 1px, 1px); padding: 1px 0 0 0!important; border: 0!important; height: 1px!important; width: 1px!important; overflow: hidden!important; display: block!important; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none}
+.MJX_Assistive_MathML.MJX_Assistive_MathML_Block {width: 100%!important}
+</style><style type="text/css">#MathJax_Zoom {position: absolute; background-color: #F0F0F0; overflow: auto; display: block; z-index: 301; padding: .5em; border: 1px solid black; margin: 0; font-weight: normal; font-style: normal; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; -webkit-box-sizing: content-box; -moz-box-sizing: content-box; box-sizing: content-box; box-shadow: 5px 5px 15px #AAAAAA; -webkit-box-shadow: 5px 5px 15px #AAAAAA; -moz-box-shadow: 5px 5px 15px #AAAAAA; -khtml-box-shadow: 5px 5px 15px #AAAAAA; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_ZoomOverlay {position: absolute; left: 0; top: 0; z-index: 300; display: inline-block; width: 100%; height: 100%; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+#MathJax_ZoomFrame {position: relative; display: inline-block; height: 0; width: 0}
+#MathJax_ZoomEventTrap {position: absolute; left: 0; top: 0; z-index: 302; display: inline-block; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+</style><style type="text/css">.MathJax_Preview {color: #888}
+#MathJax_Message {position: fixed; left: 1em; bottom: 1.5em; background-color: #E6E6E6; border: 1px solid #959595; margin: 0px; padding: 2px 8px; z-index: 102; color: black; font-size: 80%; width: auto; white-space: nowrap}
+#MathJax_MSIE_Frame {position: absolute; top: 0; left: 0; width: 0px; z-index: 101; border: 0px; margin: 0px; padding: 0px}
+.MathJax_Error {color: #CC0000; font-style: italic}
+</style><style type="text/css">.MJXp-script {font-size: .8em}
+.MJXp-right {-webkit-transform-origin: right; -moz-transform-origin: right; -ms-transform-origin: right; -o-transform-origin: right; transform-origin: right}
+.MJXp-bold {font-weight: bold}
+.MJXp-italic {font-style: italic}
+.MJXp-scr {font-family: MathJax_Script,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-frak {font-family: MathJax_Fraktur,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-sf {font-family: MathJax_SansSerif,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-cal {font-family: MathJax_Caligraphic,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-mono {font-family: MathJax_Typewriter,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-largeop {font-size: 150%}
+.MJXp-largeop.MJXp-int {vertical-align: -.2em}
+.MJXp-math {display: inline-block; line-height: 1.2; text-indent: 0; font-family: 'Times New Roman',Times,STIXGeneral,serif; white-space: nowrap; border-collapse: collapse}
+.MJXp-display {display: block; text-align: center; margin: 1em 0}
+.MJXp-math span {display: inline-block}
+.MJXp-box {display: block!important; text-align: center}
+.MJXp-box:after {content: " "}
+.MJXp-rule {display: block!important; margin-top: .1em}
+.MJXp-char {display: block!important}
+.MJXp-mo {margin: 0 .15em}
+.MJXp-mfrac {margin: 0 .125em; vertical-align: .25em}
+.MJXp-denom {display: inline-table!important; width: 100%}
+.MJXp-denom > * {display: table-row!important}
+.MJXp-surd {vertical-align: top}
+.MJXp-surd > * {display: block!important}
+.MJXp-script-box > *  {display: table!important; height: 50%}
+.MJXp-script-box > * > * {display: table-cell!important; vertical-align: top}
+.MJXp-script-box > *:last-child > * {vertical-align: bottom}
+.MJXp-script-box > * > * > * {display: block!important}
+.MJXp-mphantom {visibility: hidden}
+.MJXp-munderover {display: inline-table!important}
+.MJXp-over {display: inline-block!important; text-align: center}
+.MJXp-over > * {display: block!important}
+.MJXp-munderover > * {display: table-row!important}
+.MJXp-mtable {vertical-align: .25em; margin: 0 .125em}
+.MJXp-mtable > * {display: inline-table!important; vertical-align: middle}
+.MJXp-mtr {display: table-row!important}
+.MJXp-mtd {display: table-cell!important; text-align: center; padding: .5em 0 0 .5em}
+.MJXp-mtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-mlabeledtr {display: table-row!important}
+.MJXp-mlabeledtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mlabeledtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-merror {background-color: #FFFF88; color: #CC0000; border: 1px solid #CC0000; padding: 1px 3px; font-style: normal; font-size: 90%}
+.MJXp-scale0 {-webkit-transform: scaleX(.0); -moz-transform: scaleX(.0); -ms-transform: scaleX(.0); -o-transform: scaleX(.0); transform: scaleX(.0)}
+.MJXp-scale1 {-webkit-transform: scaleX(.1); -moz-transform: scaleX(.1); -ms-transform: scaleX(.1); -o-transform: scaleX(.1); transform: scaleX(.1)}
+.MJXp-scale2 {-webkit-transform: scaleX(.2); -moz-transform: scaleX(.2); -ms-transform: scaleX(.2); -o-transform: scaleX(.2); transform: scaleX(.2)}
+.MJXp-scale3 {-webkit-transform: scaleX(.3); -moz-transform: scaleX(.3); -ms-transform: scaleX(.3); -o-transform: scaleX(.3); transform: scaleX(.3)}
+.MJXp-scale4 {-webkit-transform: scaleX(.4); -moz-transform: scaleX(.4); -ms-transform: scaleX(.4); -o-transform: scaleX(.4); transform: scaleX(.4)}
+.MJXp-scale5 {-webkit-transform: scaleX(.5); -moz-transform: scaleX(.5); -ms-transform: scaleX(.5); -o-transform: scaleX(.5); transform: scaleX(.5)}
+.MJXp-scale6 {-webkit-transform: scaleX(.6); -moz-transform: scaleX(.6); -ms-transform: scaleX(.6); -o-transform: scaleX(.6); transform: scaleX(.6)}
+.MJXp-scale7 {-webkit-transform: scaleX(.7); -moz-transform: scaleX(.7); -ms-transform: scaleX(.7); -o-transform: scaleX(.7); transform: scaleX(.7)}
+.MJXp-scale8 {-webkit-transform: scaleX(.8); -moz-transform: scaleX(.8); -ms-transform: scaleX(.8); -o-transform: scaleX(.8); transform: scaleX(.8)}
+.MJXp-scale9 {-webkit-transform: scaleX(.9); -moz-transform: scaleX(.9); -ms-transform: scaleX(.9); -o-transform: scaleX(.9); transform: scaleX(.9)}
+.MathJax_PHTML .noError {vertical-align: ; font-size: 90%; text-align: left; color: black; padding: 1px 3px; border: 1px solid}
+</style></head>
+
+    <body class="dark-theme" cz-shortcut-listen="true"><div id="MathJax_Message" style="display: none;"></div>
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="http://127.0.0.1:4321/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">&gt;</span>
+            <span class="logo__text">F A H M Y . I O</span>
+            <span class="logo__cursor"></span>
+        
+    </div>
+</a>
+
+
+    </span>
+</header>
+
+
+            <div class="content">
+                
+    <main class="post">
+
+        <div class="post-info">
+            
+            <p></p>
+        </div>
+
+        <article>
+            <h2 class="post-title"><a href="http://127.0.0.1:4321/2019/09/28/advanced-linear-programming/">Julia for Scientific Computing</a></h2>
+
+            
+
+            <div class="post-content">
+                
+
+<h2 id="what-is-julia">What is Julia?</h2>
+
+<p>Julia is a general purpose dynamic programming language that supports mathematical and statistical operations similar to R and vectorized numerical functions similar to MATLAB all with python-like syntax - making ideal for high-performance scientific computing. Julia’s current ecosystem is mature enough to build and deploy analytics web applications, making it a serious contender to R and Python.</p>
+
+<p>Julia has some unique features unavailable in current langauges used for scientific computing, including native support for parallel and distributed computing and an extensive library - most of the popular computing libraries available in python such as SciKit Learn and Tensorflow are available in Julia’s package manager and python-only packages can be utilized via PyCall.</p>
+
+<h2 id="performance-julia-vs-python-vs-scala">Performance: Julia vs. Python vs. Scala</h2>
+
+<p>To get a better idea of the performance gains from Julia, lets compare it to other popular langauges used in Machine Learning / Data Science. Below is a monte carlo simulation to estimate the value of pi implemented in Scala, Python, and Julia. The results show that Julia is by far the most efficient.</p>
+
+<p><strong>Scala</strong> Elapsed Time: 140.041331813 sec</p>
+
+<pre class=" language-scala"><code class=" language-scala"><span class="token keyword">import</span> <span class="token namespace">scala<span class="token punctuation">.</span>util</span><span class="token punctuation">.</span>Random
+<span class="token keyword">def</span> mcCount<span class="token punctuation">(</span>nsamples<span class="token operator">:</span> <span class="token builtin">Int</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">Int</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+    <span class="token keyword">val</span> randomX <span class="token operator">=</span> <span class="token keyword">new</span> Random
+    <span class="token keyword">val</span> randomY <span class="token operator">=</span> <span class="token keyword">new</span> Random
+    <span class="token keyword">var</span> acc <span class="token operator">=</span> <span class="token number">0</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span>i <span class="token keyword">&lt;-</span> <span class="token number">1</span> until nsamples<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">val</span> x <span class="token operator">=</span> randomX<span class="token punctuation">.</span>nextDouble 
+        <span class="token keyword">val</span> y <span class="token operator">=</span> randomY<span class="token punctuation">.</span>nextDouble 
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>x<span class="token operator">*</span>x <span class="token operator">+</span> y<span class="token operator">*</span>y <span class="token operator">&lt;</span> <span class="token number">1</span><span class="token punctuation">)</span> acc<span class="token operator">=</span> acc <span class="token operator">+</span> <span class="token number">1</span>
+    <span class="token punctuation">}</span>
+    acc
+<span class="token punctuation">}</span>
+<span class="token keyword">def</span> monte_carlo_pi<span class="token punctuation">(</span>iter<span class="token operator">:</span> <span class="token builtin">Int</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">Double</span> <span class="token operator">=</span> <span class="token number">4.0</span> <span class="token operator">*</span> mcCount<span class="token punctuation">(</span>nsamples<span class="token punctuation">)</span> <span class="token operator">/</span> nsamples
+<span class="token keyword">val</span> nsamples <span class="token operator">=</span> scala<span class="token punctuation">.</span>math<span class="token punctuation">.</span>pow<span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">,</span><span class="token number">10</span><span class="token punctuation">)</span>
+<span class="token keyword">val</span> t0 <span class="token operator">=</span> System<span class="token punctuation">.</span>nanoTime<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token keyword">val</span> result <span class="token operator">=</span> monte_carlo_pi<span class="token punctuation">(</span>nsamples<span class="token punctuation">.</span>toInt<span class="token punctuation">)</span>
+<span class="token keyword">val</span> t1 <span class="token operator">=</span> System<span class="token punctuation">.</span>nanoTime<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token keyword">val</span> elapsed_time <span class="token operator">=</span> <span class="token punctuation">(</span>t1<span class="token operator">-</span>t0<span class="token punctuation">)</span><span class="token operator">/</span>scala<span class="token punctuation">.</span>math<span class="token punctuation">.</span>pow<span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">,</span><span class="token number">9</span><span class="token punctuation">)</span>
+println<span class="token punctuation">(</span><span class="token string">"Elapsed Time: "</span> <span class="token operator">+</span> elapsed_time <span class="token operator">+</span><span class="token string">"sec"</span><span class="token punctuation">)</span>
+
+result <span class="token operator">=</span> <span class="token number">3.1415643278237266</span>
+</code></pre>
+
+<p><strong>Python (w/Numba)</strong> Elapsed Time: 175.5762140750885 sec</p>
+
+<pre class=" language-python"><code class=" language-python"><span class="token keyword">import</span> time
+<span class="token keyword">from</span> numba <span class="token keyword">import</span> njit
+<span class="token keyword">import</span> random
+@njit<span class="token punctuation">(</span>nopython<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">,</span> parallel<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">)</span>
+<span class="token keyword">def</span> <span class="token function">monte_carlo_pi</span><span class="token punctuation">(</span>nsamples<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    acc <span class="token operator">=</span> <span class="token number">0</span>
+    <span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span>nsamples<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        x <span class="token operator">=</span> random<span class="token punctuation">.</span>random<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        y <span class="token operator">=</span> random<span class="token punctuation">.</span>random<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>x <span class="token operator">**</span> <span class="token number">2</span> <span class="token operator">+</span> y <span class="token operator">**</span> <span class="token number">2</span><span class="token punctuation">)</span> <span class="token operator">&lt;</span> <span class="token number">1.0</span><span class="token punctuation">:</span>
+            acc <span class="token operator">+=</span> <span class="token number">1</span>
+    <span class="token keyword">return</span> <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token number">4.0</span> <span class="token operator">*</span> acc <span class="token operator">/</span> nsamples<span class="token punctuation">)</span>
+t0 <span class="token operator">=</span> time<span class="token punctuation">.</span>time<span class="token punctuation">(</span><span class="token punctuation">)</span>
+monte_carlo_pi<span class="token punctuation">(</span><span class="token number">10</span><span class="token operator">**</span><span class="token number">10</span><span class="token punctuation">)</span>
+t1 <span class="token operator">=</span> time<span class="token punctuation">.</span>time<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"Elapsed Time: "</span><span class="token punctuation">,</span> <span class="token punctuation">(</span>t1<span class="token operator">-</span> t0<span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token string">"sec"</span><span class="token punctuation">)</span>  
+
+result <span class="token operator">=</span> <span class="token number">3.1415756664</span>
+</code></pre>
+
+<p><strong>Julia</strong> Elapsed Time: 52.1004299293578 sec</p>
+
+<pre class=" language-python"><code class=" language-python">module mc
+    function monte_carlo_pi<span class="token punctuation">(</span>nsamples<span class="token punctuation">:</span><span class="token punctuation">:</span>Int64<span class="token punctuation">)</span>
+        acc <span class="token operator">=</span> <span class="token number">0</span>
+        t1<span class="token operator">=</span>time_ns<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token number">1</span><span class="token punctuation">:</span>nsamples
+            x <span class="token operator">=</span> rand<span class="token punctuation">(</span><span class="token punctuation">)</span>
+            y <span class="token operator">=</span> rand<span class="token punctuation">(</span><span class="token punctuation">)</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>x <span class="token operator">^</span> <span class="token number">2</span> <span class="token operator">+</span> y <span class="token operator">^</span> <span class="token number">2</span><span class="token punctuation">)</span> <span class="token operator">&lt;</span> <span class="token number">1.0</span>
+                acc <span class="token operator">+=</span> <span class="token number">1</span>
+            end    
+        end
+        t2<span class="token operator">=</span>time_ns<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        elapsed <span class="token operator">=</span> <span class="token punctuation">(</span>t2<span class="token operator">-</span>t1<span class="token punctuation">)</span><span class="token operator">/</span><span class="token number">1.09e9</span>
+        println<span class="token punctuation">(</span><span class="token number">4.0</span> <span class="token operator">*</span> acc <span class="token operator">/</span> nsamples<span class="token punctuation">)</span>
+        println<span class="token punctuation">(</span><span class="token string">"Elapsed Time: "</span><span class="token punctuation">,</span>elapsed<span class="token punctuation">)</span>
+    end
+end
+
+result <span class="token operator">=</span> <span class="token number">3.1416097296</span>
+</code></pre>
+
+<p>In my next post, I will go over some practical examples using Julia.</p>
+
+            </div>
+        </article>
+
+        <hr>
+
+        <div class="post-info">
+  			</div>
+
+        
+    </main>
+
+            </div>
+
+            
+            
+                <footer class="footer">
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>Ahmad Fahmy </span><span>© 2019</span>
+            
+            <span></span>
+            <span> <a href="http://127.0.0.1:4321/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>
+        </div>
+    </div>
+    <div class="footer__inner">
+        <div class="footer__content">
+
+        </div>
+    </div>
+    <div class="footer__inner">
+        <div class="footer__content">
+        </div>
+    </div>
+</footer>
+
+
+
+    <script src="MathJax.js" id=""></script>
+    
+    <script type="text/x-mathjax-config;executed=true">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+            processEscapes: true,
+            processEnvironments: true
+        },
+        // Center justify equations in code and markdown cells. Elsewhere
+        // we use CSS to left justify single line equations in code cells.
+        displayAlign: 'center',
+        "HTML-CSS": {
+            styles: {'.MathJax_Display': {"margin": 0}},
+            linebreaks: { automatic: true }
+        }
+    });
+    </script>
+    
+            
+        </div>
+
+        
+
+
+
+
+<script type="text/javascript" src="bundle.js" integrity="sha512-z3hx7UlHSoDtRXFU0k5h94ga2+D5OElRp0rEa2iKOaTb+mi8bTe66wWBht41Tq00h9Tufwg+pMuoYMSGALaU8w=="></script>
+
+
+
+    
+</body></html>
